@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Justify } from '$lib/types'
+	import { AlignItems } from '$lib/types/AlignItems'
 	import { Border, BorderColor } from '$lib/types/Border'
 	import { ContainerGap } from '$lib/types/Gap'
 	import { ContainerPadding } from '$lib/types/Padding'
@@ -7,13 +9,16 @@
 
 	let clazz: string = ''
 
-	export let padding: ContainerPadding = ContainerPadding.XS
+	export let padding: ContainerPadding = ContainerPadding.NONE
 	export let gap: ContainerGap = ContainerGap.XS
 	export let rounded: BorderRounded = BorderRounded.NONE
 	export let border: Border = Border.NONE
 	export let borderColor: BorderColor = BorderColor.BASE_300
 	export let shadow: Shadow = Shadow.NONE
+	export let justify: Justify = Justify.START
+	export let alignItems: AlignItems = AlignItems.START
 	export let col = false
+	export let tag: keyof HTMLElementTagNameMap = 'div'
 
 	export { clazz as class }
 
@@ -23,11 +28,11 @@
 			divClass += 'flex-col'
 		}
 
-		divClass = `${divClass} ${padding} ${gap} ${border} ${borderColor} 
-			${rounded} ${shadow} ${clazz}`
+		divClass = `${divClass} ${justify} ${alignItems} ${padding} ${gap} 
+			${border} ${borderColor} ${rounded} ${shadow} ${clazz}`
 	}
 </script>
 
-<div class={divClass}>
+<svelte:element this={tag} class={divClass}>
 	<slot />
-</div>
+</svelte:element>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ButtonSize, ButtonVariant } from './types'
 	export let label: string | undefined = undefined
-	export let size: ButtonSize = ButtonSize.MD
+	export let size: ButtonSize = ButtonSize.SM
 	export let variant: ButtonVariant = ButtonVariant.NEUTRAL
 	export let plain: boolean = false
 	export let outline: boolean = false

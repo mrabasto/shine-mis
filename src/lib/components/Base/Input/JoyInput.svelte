@@ -23,10 +23,11 @@
 		let buildClass = ''
 
 		if (bordered) {
-			buildClass += ' input-bordered'
+			buildClass += ' input-bordered border-2'
 		}
 
-		inputClass = `input ${variant} ${size} ${rounded} ${buildClass} ${clazz}`
+		inputClass = `input focus-within:outline-none focus-within:border-accent
+			${variant} ${size} ${rounded} ${buildClass} ${clazz}`
 	}
 
 	const nodeType = (node: HTMLInputElement) => {
@@ -34,4 +35,19 @@
 	}
 </script>
 
-<input use:nodeType {name} {placeholder} class={inputClass} bind:value {...attributes} />
+{#if $$slots['labeled-l'] || $$slots['labeled-r']}
+	<label class={`${inputClass} flex items-center gap-2`}>
+		<slot name="labeled-l" />
+		<input use:nodeType {name} {placeholder} bind:value {...attributes} class="grow" />
+		<slot name="labeled-r" />
+	</label>
+{:else}
+	<input
+		use:nodeType
+		{name}
+		{placeholder}
+		class={inputClass}
+		bind:value
+		{...attributes}
+	/>
+{/if}
