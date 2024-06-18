@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+/* html {
+	--sb-track-color: #f7f7f7;
+	--sb-thumb-color: #ffedb1;
+	--sb-size: 6px;
+} */
+
+::-webkit-scrollbar {
+	@apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+	@apply bg-transparent rounded;
+}
+
+::-webkit-scrollbar-thumb {
+	@apply bg-base-200 rounded;
+}
+
+/* @supports not selector(::-webkit-scrollbar) {
+	html {
+		scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+	}
+} */
+
+.swal2-container {
+	@apply z-[9999];
+}
+
+.swal2-popup.swal2-toast {
+	padding: 0.5em 1em !important;
+	display: flex !important;
+	width: auto !important;
+}
+.swal2-popup.swal2-toast .swal2-title {
+	margin: 0.75em 0.25em !important;
+}
+
+.ql-container {
+	@apply whitespace-pre-wrap p-0;
+	@apply !font-sans !text-sm;
+}
+
+.editor-toolbar-button {
+	@apply hover:bg-gray-100 rounded-md p-2;
+
+	&.ql-active {
+		@apply bg-gray-100;
+	}
+}
