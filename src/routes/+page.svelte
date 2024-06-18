@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { goto } from '$app/navigation'
 	import JoyLoginBg from '$lib/components/Advanced/Svg/JoyLoginBG.svelte'
+	import JoyToast from '$lib/components/Advanced/Toast/JoyToast.svelte'
 	import JoyButton from '$lib/components/Base/Button/JoyButton.svelte'
 	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button/types.js'
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
@@ -9,13 +11,15 @@
 	import { InputSize } from '$lib/components/Base/Input/types'
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextSize, TextTag } from '$lib/components/Base/Text/types'
-	import { signIn } from '$lib/modules/authentication'
+	import { auth, signIn, user } from '$lib/modules/authentication'
 	import { Justify, ContainerPadding, ContainerGap } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
 	import { superForm } from 'sveltekit-superforms'
 	import { zod } from 'sveltekit-superforms/adapters'
 
 	export let data
+	let toast: JoyToast
+	let isAuthenticating = false
 
 	const { form, enhance, constraints } = superForm(data.form, {
 		SPA: true,
@@ -23,7 +27,18 @@
 		validators: zod(data.schema),
 		onUpdate({ form }) {
 			if (form.valid) {
-				signIn($form.username, $form.password).then(console.log).catch(console.log)
+				isAuthenticating = true
+				signIn($form.username, $form.password)
+					.then((response) => {
+						auth.set(response)
+						user.set(response.record)
+						goto('/home', { replaceState: true })
+					})
+					.catch(({ response }) => {
+						console.error({ response })
+						toast.toggleShown(response.message)
+					})
+					.finally(() => (isAuthenticating = false))
 			}
 		},
 	})
@@ -42,6 +57,8 @@
 
 	<form method="post" use:enhance>
 		<JoyContainer padding={ContainerPadding.MD} col class="bg-transparent relative">
+			<JoyToast bind:this={toast} target="shell" />
+
 			<JoyText
 				tag={TextTag.H1}
 				size={TextSize.XL_4}

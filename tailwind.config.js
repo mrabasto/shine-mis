@@ -29,7 +29,7 @@ export default {
 					info: '#cffafe',
 					success: '#d9f99d',
 					warning: '#facc15',
-					error: '#f87171',
+					error: '#ef4444',
 				},
 			},
 		],

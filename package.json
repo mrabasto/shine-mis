@@ -40,6 +40,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"pocketbase": "^0.21.3"
+		"pocketbase": "^0.21.3",
+		"radash": "^12.1.0"
 	}
 }
