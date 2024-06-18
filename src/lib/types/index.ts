@@ -1,0 +1,7 @@
+export * from './Border'
+export * from './Colors'
+export * from './Gap'
+export * from './Padding'
+export * from './Round'
+export * from './Shadow'
+export * from './Justify'
