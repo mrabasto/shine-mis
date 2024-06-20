@@ -7,9 +7,9 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['Inter', ...defaultTheme.fontFamily.sans],
+				sans: ['Inter', 'Poppins', ...defaultTheme.fontFamily.sans],
 			},
-		}
+		},
 	},
 
 	plugins: [
@@ -34,5 +34,4 @@ export default {
 			},
 		],
 	},
-
 }

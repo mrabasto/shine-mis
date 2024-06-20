@@ -4,6 +4,7 @@ export enum TextColor {
 	BASE_200 = 'text-base-200',
 	BASE_300 = 'text-base-300',
 	ERROR = 'text-error',
+	GRAY_800 = 'text-gray-800',
 	INFO = 'text-info',
 	NEUTRAL = 'text-neutral',
 	NEUTRAL_CONTENT = 'text-neutral-content',

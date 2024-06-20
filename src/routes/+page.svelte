@@ -19,6 +19,7 @@
 
 	export let data
 	let toast: JoyToast
+
 	let isAuthenticating = false
 
 	const { form, enhance, constraints } = superForm(data.form, {
@@ -51,7 +52,8 @@
 >
 	<div class="absolute inset-0">
 		<JoyLoginBg
-			class="absolute inset-0 bg-transparent [mask-image:linear-gradient(to_bottom_left,white,transparent,transparent)]"
+			class="absolute inset-0 bg-transparent 
+				[mask-image:linear-gradient(to_bottom_left,white,transparent,transparent)]"
 		/>
 	</div>
 

@@ -4,7 +4,7 @@
 	let clazz = ''
 	export { clazz as class }
 	export let tag: TextTag = TextTag.SPAN
-	export let color: TextColor = TextColor.NEUTRAL
+	export let color: TextColor = TextColor.GRAY_800
 	export let weight: FontWeight = FontWeight.NORMAL
 	export let size: TextSize = TextSize.BASE
 	export let italicize = false
