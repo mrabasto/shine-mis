@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { clickOutside, escapePress } from '$lib/composables/useActions'
+
 	export let id = 'custom-modal'
-	import useActions from '$lib/composables/useActions'
 	let clazz = ''
 	let open = ''
 	export { clazz as class }
@@ -18,8 +19,6 @@
 	}
 
 	export let actionBlocked = false
-
-	const { clickOutside, escapePress } = useActions()
 </script>
 
 <dialog {id} class={modalClass}>

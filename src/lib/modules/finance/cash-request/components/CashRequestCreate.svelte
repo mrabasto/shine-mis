@@ -1,0 +1,142 @@
+<script lang="ts">
+	import JoyDrawer from '$lib/components/Advanced/Drawer/JoyDrawer.svelte'
+	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button'
+	import JoyButton from '$lib/components/Base/Button/JoyButton.svelte'
+	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
+	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
+	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
+	import { FontWeight, TextSize } from '$lib/components/Base/Text/types'
+	import { BorderRounded, ContainerPadding, Justify } from '$lib/types'
+	import { AlignItems } from '$lib/types/AlignItems'
+	import type { CashRequestItem } from '$lib/modules/finance/cash-request/types'
+	import JoyInput from '$lib/components/Base/Input/JoyInput.svelte'
+	import { uid } from 'radash'
+	import { createCashRequest } from '$lib/modules/finance/cash-request/services'
+	import {
+		CashRequestEvent,
+		type CashRequestDispatch,
+	} from '$lib/modules/finance/cash-request/events'
+	import { createEventDispatcher, tick } from 'svelte'
+	import { slide } from 'svelte/transition'
+	import JoyItemLoader from '$lib/components/Advanced/Loader/JoyItemLoader.svelte'
+
+	let drawer: JoyDrawer,
+		items: CashRequestItem[] = [],
+		isLoading = false
+
+	const dispatch = createEventDispatcher<CashRequestDispatch>()
+
+	export let maxLimit = 10
+
+	const newItem = () => ({
+		id: uid(10),
+		label: '',
+		price: 0,
+	})
+
+	const addItem = () => {
+		if (isInLimit) return
+		items = [...items, newItem()]
+	}
+
+	const removeItem = (item: CashRequestItem) => {
+		items = items.filter((i) => i.id !== item.id)
+	}
+
+	const submit = () => {
+		isLoading = true
+		createCashRequest(items)
+			.then((response) => {
+				dispatch(CashRequestEvent.CREATE, response)
+
+				tick().then(() => {
+					items = []
+					hide()
+				})
+			})
+			.catch((response) => dispatch(CashRequestEvent.ERROR, response.message))
+			.finally(() => (isLoading = false))
+	}
+
+	export const show = () => drawer.show()
+	export const hide = () => drawer.hide()
+
+	$: notValid =
+		items.length === 0 ||
+		items.some((i) => i.label.length === 0 || !i.price || i.price === 0)
+
+	$: isInLimit = items.length === maxLimit
+</script>
+
+<JoyDrawer bind:this={drawer} blocked={isLoading}>
+	<JoyItemLoader {isLoading} />
+
+	<JoyContainer
+		class="w-full"
+		alignItems={AlignItems.CENTER}
+		padding={ContainerPadding.MD}
+	>
+		<JoyButton
+			class="rounded-full btn-circle"
+			variant={ButtonVariant.GHOST}
+			on:click={drawer.hide}
+		>
+			<JoyIcon icon="xmark" />
+		</JoyButton>
+		<JoyContainer>
+			<JoyText weight={FontWeight.LIGHT} size={TextSize.LG}>Cash Requests</JoyText>
+			<JoyText weight={FontWeight.NORMAL} size={TextSize.LG}>/</JoyText>
+			<JoyText weight={FontWeight.BOLD} size={TextSize.LG}>New Request</JoyText>
+		</JoyContainer>
+	</JoyContainer>
+
+	<JoyContainer
+		padding={ContainerPadding.MD}
+		class="w-full py-0"
+		justify={Justify.BETWEEN}
+	>
+		<JoyText size={TextSize.LG}>Items</JoyText>
+		<JoyButton label="Submit" bind:disabled={notValid} on:click={submit} />
+	</JoyContainer>
+
+	<JoyContainer padding={ContainerPadding.XXS} col class="w-full">
+		<JoyContainer
+			col
+			class="w-full bg-base-200"
+			padding={ContainerPadding.SM}
+			rounded={BorderRounded.LG}
+		>
+			{#each items as item (item.id)}
+				<div class="w-full" transition:slide|local={{ duration: 100 }}>
+					<JoyContainer class="w-full" alignItems={AlignItems.CENTER}>
+						<JoyInput bordered placeholder="Item" class="grow" bind:value={item.label} />
+						<JoyInput
+							bordered
+							placeholder="Amount"
+							type="number"
+							class="grow"
+							bind:value={item.price}
+						/>
+
+						<JoyButton
+							class="rounded-full btn-circle shrink-0 group"
+							plain
+							variant={ButtonVariant.GHOST_ERROR}
+							size={ButtonSize.SM}
+							on:click={() => removeItem(item)}
+						>
+							<JoyIcon icon="trash-solid" class="group-hover:text-error" />
+						</JoyButton>
+					</JoyContainer>
+				</div>
+			{/each}
+
+			<JoyButton
+				label="+ Add Item"
+				class="w-full"
+				disabled={isInLimit}
+				on:click={addItem}
+			/>
+		</JoyContainer>
+	</JoyContainer>
+</JoyDrawer>

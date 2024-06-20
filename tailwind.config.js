@@ -22,13 +22,14 @@ export default {
 			{
 				mytheme: {
 					primary: '#3b82f6',
+					'primary-content': '#dbeafe',
 					secondary: '#93c5fd',
 					accent: '#1d4ed8',
 					neutral: '#01170F',
 					'base-100': '#fafbff',
-					info: '#cffafe',
-					success: '#d9f99d',
-					warning: '#facc15',
+					info: '#38bdf8',
+					success: '#a3e635',
+					warning: '#eab308',
 					error: '#ef4444',
 				},
 			},

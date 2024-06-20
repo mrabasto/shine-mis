@@ -11,7 +11,7 @@
 	import { InputSize } from '$lib/components/Base/Input/types'
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextSize, TextTag } from '$lib/components/Base/Text/types'
-	import { auth, signIn, user } from '$lib/modules/authentication'
+	import { authResponse, signIn, user } from '$lib/modules/authentication'
 	import { Justify, ContainerPadding, ContainerGap } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
 	import { superForm } from 'sveltekit-superforms'
@@ -31,7 +31,7 @@
 				isAuthenticating = true
 				signIn($form.username, $form.password)
 					.then((response) => {
-						auth.set(response)
+						authResponse.set(response)
 						user.set(response.record)
 						goto('/home', { replaceState: true })
 					})

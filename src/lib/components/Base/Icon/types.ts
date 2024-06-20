@@ -21,7 +21,6 @@ import JoyIconThread from './Variants/JoyIconThread.svelte'
 import JoyIconTrash from './Variants/JoyIconTrash.svelte'
 import JoyIconUnderline from './Variants/JoyIconUnderline.svelte'
 import JoyIconXMark from './Variants/JoyIconXMark.svelte'
-import JoyIconXMarkCircled from './Variants/JoyIconXMarkCircled.svelte'
 import JoyIconShop from './Variants/JoyIconShop.svelte'
 import JoyIconEye from './Variants/JoyIconEye.svelte'
 export enum Fill {
@@ -45,6 +44,7 @@ export enum Stroke {
 	PRIMARY = 'stroke-primary',
 	SECONDARY = 'stroke-secondary',
 	SECONDARY_CONTENT = 'stroke-secondary-content',
+	TRANSPARENT = 'stroke-transparent',
 	SUCCESS = 'stroke-success',
 	WARNING = 'stroke-warning',
 }
@@ -84,5 +84,4 @@ export const icons = {
 	trash: JoyIconTrash,
 	underline: JoyIconUnderline,
 	xmark: JoyIconXMark,
-	'xmark-circled': JoyIconXMarkCircled,
 }

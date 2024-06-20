@@ -5,7 +5,7 @@
 	let clazz = ''
 	export { clazz as class }
 	export let fill: Fill = Fill.NONE
-	export let stroke: Stroke = Stroke.NEUTRAL
+	export let stroke: Stroke = Stroke.TRANSPARENT
 	export let size: Size = Size.MD
 	export let icon: IconName | UnplugIconName = 'crown-circle'
 	import { icons } from './types'

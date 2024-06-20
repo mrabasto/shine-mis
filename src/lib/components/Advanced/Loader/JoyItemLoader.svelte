@@ -1,6 +1,7 @@
 <script lang="ts">
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
+	import { Stroke } from '$lib/components/Base/Icon/types'
 	import JoyRow from '$lib/components/Base/Row/JoyRow.svelte'
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { ContainerGap } from '$lib/types/Gap'
@@ -15,12 +16,12 @@
 </script>
 
 {#if isLoading}
-	<JoyContainer rounded={BorderRounded.MD} class={loaderClass}>
+	<div class={loaderClass}>
 		<JoyRow gap={ContainerGap.XXS}>
-			<JoyIcon icon="loading" />
+			<JoyIcon icon="loading" stroke={Stroke.NEUTRAL} />
 			<JoyText>{label}</JoyText>
 		</JoyRow>
-	</JoyContainer>
+	</div>
 {:else}
 	<slot />
 {/if}

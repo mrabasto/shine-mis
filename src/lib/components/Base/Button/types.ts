@@ -8,7 +8,8 @@ export enum ButtonSize {
 export enum ButtonVariant {
 	ACCENT = `btn-accent`,
 	ERROR = 'btn-error',
-	GHOST = 'btn-ghost',
+	GHOST = 'btn-ghost hover:bg-secondary/50',
+	GHOST_ERROR = 'btn-ghost hover:bg-error/50',
 	INFO = `btn-info`,
 	LINK = 'btn-link',
 	NEUTRAL = `btn-neutral`,

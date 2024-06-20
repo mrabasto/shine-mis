@@ -2,7 +2,7 @@
 	import JoySidebar from '$lib/components/Advanced/Sidebar/JoySidebar.svelte'
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
 	import { routes } from '$lib/routes'
-	import { BorderRounded, ContainerGap, ContainerPadding } from '$lib/types'
+	import { ContainerGap, ContainerPadding } from '$lib/types'
 </script>
 
 <JoyContainer
@@ -11,11 +11,13 @@
 >
 	<JoySidebar let:SidebarItem class="border-r">
 		{#each $routes as route (route.path)}
-			<SidebarItem
-				icon={route.icon}
-				href={route.path}
-				class="hover:bg-secondary/25 hover:text-primary"
-			/>
+			{#if route.isShown}
+				<SidebarItem
+					icon={route.icon}
+					href={route.path}
+					class="hover:bg-secondary/25 hover:text-primary"
+				/>
+			{/if}
 		{/each}
 		<SidebarItem icon="settings" class="mt-auto" />
 	</JoySidebar>

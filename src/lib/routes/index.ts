@@ -10,6 +10,7 @@ export interface Route {
 	icon: IconName | UnplugIconName
 	class?: string
 	isActive?: boolean
+	isShown?: boolean
 	label?: string
 }
 
@@ -26,5 +27,6 @@ export const routes = writable<Route[]>([
 	{
 		path: Finance.INDEX,
 		icon: 'money-square',
+		isShown: true,
 	},
 ])

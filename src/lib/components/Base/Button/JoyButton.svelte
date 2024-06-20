@@ -17,12 +17,6 @@
 			${noAnimation && 'no-animation'}`
 	}
 
-	$: switch (variant) {
-		case ButtonVariant.GHOST:
-			btnClass = `${btnClass} hover:bg-secondary/50`
-			break
-	}
-
 	function nodeType(node: HTMLButtonElement) {
 		node.type = type
 	}

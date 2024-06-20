@@ -1,33 +1,100 @@
 <script lang="ts">
+	import JoyToast from '$lib/components/Advanced/Toast/JoyToast.svelte'
+	import { ToastVariant } from '$lib/components/Advanced/Toast/types'
+	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button'
+	import JoyButton from '$lib/components/Base/Button/JoyButton.svelte'
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
+	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
+	import { Stroke } from '$lib/components/Base/Icon/types'
 	import JoyInput from '$lib/components/Base/Input/JoyInput.svelte'
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextSize } from '$lib/components/Base/Text/types'
+	import CashRequestCreate from '$lib/modules/finance/cash-request/components/CashRequestCreate.svelte'
+	import type { CashRequestEvent } from '$lib/modules/finance/cash-request/events'
 	import { getCashRequests } from '$lib/modules/finance/cash-request/services'
 	import { cashRequests } from '$lib/modules/finance/cash-request/stores'
 	import { activeRoute } from '$lib/routes'
-	import { BorderRounded } from '$lib/types'
+	import { BorderRounded, Justify } from '$lib/types'
+	import { AlignItems } from '$lib/types/AlignItems'
 	import { onMount } from 'svelte'
+
+	let toast: JoyToast
+	let cashRequestCreate: CashRequestCreate
+	let toastVariant: ToastVariant = ToastVariant.INFO
 
 	onMount(() => {
 		getCashRequests()
 			.then((response) => {
 				$cashRequests = response.items
 			})
-			.catch(console.log)
+			.catch((response) => {
+				toast.setVariant(ToastVariant.ERROR)
+				toast.toggleShown(response.message)
+			})
 	})
+
+	const fetchCashRequests = () => {
+		toast.setVariant(ToastVariant.INFO)
+		toast.setNoTimer(true)
+		toast.toggleShown('Loading cash requests ..')
+
+		getCashRequests()
+			.then((response) => {
+				toast.toggleShown()
+				$cashRequests = response.items
+			})
+			.catch((response) => {
+				toast.setNoTimer(false)
+				toast.setVariant(ToastVariant.ERROR)
+				toast.toggleShown(response.message)
+			})
+	}
+
+	const errorCashRequest = (event: CustomEvent<string>) => {
+		toast.setNoTimer(false)
+		toast.setVariant(ToastVariant.ERROR)
+		toast.toggleShown(event.detail)
+	}
+
+	const newRequest = () => {
+		cashRequestCreate.show()
+	}
 </script>
 
-<JoyText size={TextSize.XL_3} weight={FontWeight.BOLD}>
-	{$activeRoute?.label}
-</JoyText>
+<CashRequestCreate
+	bind:this={cashRequestCreate}
+	on:cash-request-create={fetchCashRequests}
+	on:cash-request-error={errorCashRequest}
+/>
 
-<JoyContainer class="bg-primary w-full h-[300px] shrink-0" rounded={BorderRounded.LG}
-></JoyContainer>
+<JoyToast bind:this={toast} target="shell" bind:variant={toastVariant} />
+
+<JoyContainer class="w-full" justify={Justify.BETWEEN} alignItems={AlignItems.CENTER}>
+	<JoyContainer alignItems={AlignItems.CENTER}>
+		<JoyText size={TextSize.XL_3} weight={FontWeight.BOLD}>
+			{$activeRoute?.label}
+		</JoyText>
+
+		<JoyButton
+			variant={ButtonVariant.GHOST}
+			on:click={fetchCashRequests}
+			class="btn-circle"
+		>
+			<JoyIcon icon="refresh-double" />
+		</JoyButton>
+	</JoyContainer>
+
+	<JoyContainer alignItems={AlignItems.CENTER}>
+		<JoyButton variant={ButtonVariant.PRIMARY} size={ButtonSize.MD} on:click={newRequest}>
+			<JoyIcon icon="plus-circle-solid" stroke={Stroke.TRANSPARENT} />
+			New Request
+		</JoyButton>
+	</JoyContainer>
+</JoyContainer>
 
 <JoyContainer class="w-full">
 	<JoyInput
-		class="w-full bg-secondary/25 placeholder-secondary-content/50"
+		class="w-full bg-base-200/75 placeholder-secondary-content/50"
 		placeholder="Search"
 		rounded={BorderRounded.LG}
 	/>
@@ -54,11 +121,15 @@
 							{cashRequest.expand?.requested_by.name}
 						</th>
 						<td class="px-6 py-4"> {cashRequest.request_status}</td>
-						<td class="px-6 py-4"> {cashRequest.approval_status}</td>
-						<td class="px-6 py-4"> {cashRequest.expand?.approved_by.name}</td>
+						<td class="px-6 py-4">
+							<span class="badge badge-neutral uppercase">
+								{cashRequest.approval_status}
+							</span>
+						</td>
+						<td class="px-6 py-4"> {cashRequest.expand?.approved_by?.name ?? 'None'}</td>
 						<td class="px-6 py-4 text-right">
 							<a
-								href="#"
+								href="/"
 								class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
 								>Edit</a
 							>
