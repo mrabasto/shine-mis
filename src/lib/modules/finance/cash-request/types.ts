@@ -21,6 +21,7 @@ export interface CashRequest extends RecordModel {
 	created: string
 	expand?: { requested_by: User; approved_by: User }
 	id: string
+	items: CashRequestItem[]
 	requested_by: string
 	request_status: 'cancelled' | 'received'
 	updated: string

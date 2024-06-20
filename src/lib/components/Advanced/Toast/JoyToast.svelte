@@ -1,6 +1,6 @@
 <script lang="ts">
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
-	import { fade } from 'svelte/transition'
+	import { fly } from 'svelte/transition'
 	import { teleport } from './actions'
 	import { sleep } from 'radash'
 	import { ToastVariant } from './types'
@@ -69,8 +69,8 @@
 {#key isShown}
 	<div
 		use:teleport={target}
-		in:fade={{ duration: 50 }}
-		out:fade={{ duration: 50 }}
+		in:fly={{ duration: 100, y: -50 }}
+		out:fly={{ duration: 100, y: -50 }}
 		class={divClass}
 	>
 		<div role="alert" class={toastClass}>

@@ -6,7 +6,7 @@
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextSize } from '$lib/components/Base/Text/types'
-	import { BorderRounded, ContainerPadding, Justify } from '$lib/types'
+	import { BorderRounded, ContainerGap, ContainerPadding, Justify } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
 	import type { CashRequestItem } from '$lib/modules/finance/cash-request/types'
 	import JoyInput from '$lib/components/Base/Input/JoyInput.svelte'
@@ -91,8 +91,8 @@
 	</JoyContainer>
 
 	<JoyContainer
-		padding={ContainerPadding.MD}
-		class="w-full py-0"
+		padding={ContainerPadding.NONE}
+		class="w-full px-8 py-0"
 		justify={Justify.BETWEEN}
 	>
 		<JoyText size={TextSize.LG}>Items</JoyText>
@@ -108,18 +108,22 @@
 		>
 			{#each items as item (item.id)}
 				<div class="w-full" transition:slide|local={{ duration: 100 }}>
-					<JoyContainer class="w-full" alignItems={AlignItems.CENTER}>
-						<JoyInput bordered placeholder="Item" class="grow" bind:value={item.label} />
+					<JoyContainer
+						class="w-full"
+						alignItems={AlignItems.CENTER}
+						justify={Justify.BETWEEN}
+						gap={ContainerGap.NONE}
+					>
+						<JoyInput bordered placeholder="Item" bind:value={item.label} />
 						<JoyInput
 							bordered
 							placeholder="Amount"
 							type="number"
-							class="grow"
 							bind:value={item.price}
 						/>
 
 						<JoyButton
-							class="rounded-full btn-circle shrink-0 group"
+							class="rounded-full shrink-0 group justify-center items-center"
 							plain
 							variant={ButtonVariant.GHOST_ERROR}
 							size={ButtonSize.SM}

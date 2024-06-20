@@ -19,6 +19,11 @@
 
 	$: divClass = `${isShown ? 'flex justify-end' : 'hidden'} ${blocked && 'cursor-progress'} 
 		overflow-hidden absolute inset-0 bg-base-300/50`
+
+	let clazz = ''
+	export { clazz as class }
+
+	$: slotContainerClass = `min-h-full w-full bg-base-100 shadow relative ${clazz}`
 </script>
 
 {#key isShown}
@@ -34,7 +39,7 @@
 	>
 		<div class="w-1/3 overflow-auto" transition:fly={{ duration: 200, x: 200 }}>
 			<div class="h-full" transition:fade={{ duration: 100 }}>
-				<JoyContainer class="min-h-full w-full bg-base-100 shadow relative" col>
+				<JoyContainer class={slotContainerClass} col>
 					<slot />
 				</JoyContainer>
 			</div>

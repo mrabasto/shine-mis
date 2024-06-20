@@ -10,13 +10,14 @@
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextSize } from '$lib/components/Base/Text/types'
 	import CashRequestCreate from '$lib/modules/finance/cash-request/components/CashRequestCreate.svelte'
-	import type { CashRequestEvent } from '$lib/modules/finance/cash-request/events'
 	import { getCashRequests } from '$lib/modules/finance/cash-request/services'
 	import { cashRequests } from '$lib/modules/finance/cash-request/stores'
+	import type { CashRequestItem } from '$lib/modules/finance/cash-request/types'
 	import { activeRoute } from '$lib/routes'
 	import { BorderRounded, Justify } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
 	import { onMount } from 'svelte'
+	import { dateFromFormat } from '$lib/composables/useDateUtils'
 
 	let toast: JoyToast
 	let cashRequestCreate: CashRequestCreate
@@ -59,6 +60,13 @@
 	const newRequest = () => {
 		cashRequestCreate.show()
 	}
+
+	const computedTotal = (items: CashRequestItem[]) => {
+		return items.reduce((total, item) => {
+			total += Number(item.price)
+			return total
+		}, 0)
+	}
 </script>
 
 <CashRequestCreate
@@ -85,7 +93,7 @@
 	</JoyContainer>
 
 	<JoyContainer alignItems={AlignItems.CENTER}>
-		<JoyButton variant={ButtonVariant.PRIMARY} size={ButtonSize.MD} on:click={newRequest}>
+		<JoyButton variant={ButtonVariant.PRIMARY} size={ButtonSize.SM} on:click={newRequest}>
 			<JoyIcon icon="plus-circle-solid" stroke={Stroke.TRANSPARENT} />
 			New Request
 		</JoyButton>
@@ -105,10 +113,12 @@
 		<table class="w-full text-sm text-left rtl:text-right text-gray-600">
 			<thead class="text-xs text-gray-600 uppercase bg-base-200">
 				<tr>
+					<th scope="col" class="px-6 py-3"> Requested At </th>
 					<th scope="col" class="px-6 py-3"> Requested By </th>
 					<th scope="col" class="px-6 py-3"> Request Status </th>
 					<th scope="col" class="px-6 py-3"> Approval Status </th>
 					<th scope="col" class="px-6 py-3"> Approved By </th>
+					<th scope="col" class="px-6 py-3"> Total </th>
 					<th scope="col" class="px-6 py-3">
 						<span class="sr-only">Edit</span>
 					</th>
@@ -117,6 +127,7 @@
 			<tbody>
 				{#each $cashRequests as cashRequest (cashRequest.id)}
 					<tr class="bg-white hover:bg-base-100">
+						<td class="px-6 py-4"> {dateFromFormat(cashRequest.created)}</td>
 						<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
 							{cashRequest.expand?.requested_by.name}
 						</th>
@@ -127,6 +138,7 @@
 							</span>
 						</td>
 						<td class="px-6 py-4"> {cashRequest.expand?.approved_by?.name ?? 'None'}</td>
+						<td class="px-6 py-4"> {computedTotal(cashRequest.items)}</td>
 						<td class="px-6 py-4 text-right">
 							<a
 								href="/"
