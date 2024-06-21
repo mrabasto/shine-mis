@@ -8,6 +8,10 @@ type ClickOutsideAttributes = {
 	'on:outside'?: (event: CustomEvent) => void
 }
 
+type CtrlEnterAttributes = {
+	'on:ctrl-enter'?: (event: CustomEvent) => void
+}
+
 type EscapePressAttributes = {
 	'on:escape'?: (event: CustomEvent) => void
 }
@@ -19,7 +23,8 @@ type EscapeConfig = {
 
 type clickMeAction = Action<HTMLElement, any, ClickMeAttributes>
 type clickOutsideAction = Action<HTMLElement, any, ClickOutsideAttributes>
-type escaprePressAction = Action<HTMLElement, any, EscapePressAttributes>
+type ctrlEnterAction = Action<HTMLElement, any, CtrlEnterAttributes>
+type escapePressAction = Action<HTMLElement, any, EscapePressAttributes>
 
 export const clickMe: clickMeAction = (element) => {
 	function handle(event: MouseEvent) {
@@ -68,7 +73,27 @@ export const clickOutside: clickOutsideAction = (element) => {
 	}
 }
 
-export const escapePress: escaprePressAction = (
+export const ctrlEnter: ctrlEnterAction = (element) => {
+	function handle(event: KeyboardEvent) {
+		const { blocked } = element.dataset
+		if (blocked === 'true') return
+
+		if (event.ctrlKey && event.key.toUpperCase() == 'ENTER') {
+			const escapeEvent = new CustomEvent('ctrl-enter')
+			element.dispatchEvent(escapeEvent)
+		}
+	}
+
+	window.addEventListener('keydown', handle, true)
+
+	return {
+		destroy() {
+			window.removeEventListener('keydown', handle, true)
+		},
+	}
+}
+
+export const escapePress: escapePressAction = (
 	element,
 	config: EscapeConfig = { keyevent: 'keydown' }
 ) => {

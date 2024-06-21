@@ -12,18 +12,26 @@
 	import CashRequestCreate from '$lib/modules/finance/cash-request/components/CashRequestCreate.svelte'
 	import { getCashRequests } from '$lib/modules/finance/cash-request/services'
 	import { cashRequests } from '$lib/modules/finance/cash-request/stores'
-	import type { CashRequestItem } from '$lib/modules/finance/cash-request/types'
+	import {
+		ApprovalStatus,
+		type CashRequestItem,
+	} from '$lib/modules/finance/cash-request/types'
 	import { activeRoute } from '$lib/routes'
 	import { BorderRounded, Justify } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
 	import { onMount } from 'svelte'
 	import { dateFromFormat } from '$lib/composables/useDateUtils'
+	import { spin } from '$lib/composables/useAnimations'
 
 	let toast: JoyToast
 	let cashRequestCreate: CashRequestCreate
 	let toastVariant: ToastVariant = ToastVariant.INFO
+	let spinAnimate = false,
+		isLoading = false
 
 	onMount(() => {
+		if ($cashRequests.length) return
+
 		getCashRequests()
 			.then((response) => {
 				$cashRequests = response.items
@@ -34,7 +42,10 @@
 			})
 	})
 
-	const fetchCashRequests = () => {
+	const fetchCashRequests = async () => {
+		if (isLoading) return
+		spinAnimate = !spinAnimate
+		isLoading = true
 		toast.setVariant(ToastVariant.INFO)
 		toast.setNoTimer(true)
 		toast.toggleShown('Loading cash requests ..')
@@ -49,6 +60,7 @@
 				toast.setVariant(ToastVariant.ERROR)
 				toast.toggleShown(response.message)
 			})
+			.finally(() => (isLoading = false))
 	}
 
 	const errorCashRequest = (event: CustomEvent<string>) => {
@@ -59,6 +71,26 @@
 
 	const newRequest = () => {
 		cashRequestCreate.show()
+	}
+
+	const approvalBadge = (approvalStatus: ApprovalStatus) => {
+		const badgeClass = 'badge uppercase font-semibold'
+		switch (approvalStatus) {
+			case ApprovalStatus.PENDING:
+				return `${badgeClass} badge-warning`
+			case ApprovalStatus.APPROVED:
+				return `${badgeClass} badge-success`
+			case ApprovalStatus.DECLINED:
+				return `${badgeClass} badge-error`
+		}
+	}
+
+	const requestedItems = (items: CashRequestItem[]) => {
+		return items
+			.map((item) => {
+				return item.label
+			})
+			.join(', ')
 	}
 
 	const computedTotal = (items: CashRequestItem[]) => {
@@ -86,9 +118,13 @@
 		<JoyButton
 			variant={ButtonVariant.GHOST}
 			on:click={fetchCashRequests}
-			class="btn-circle"
+			class="btn-circle relative"
 		>
-			<JoyIcon icon="refresh-double" />
+			{#key spinAnimate}
+				<div class="inset-0 grid place-items-center" in:spin>
+					<JoyIcon icon="refresh-double" />
+				</div>
+			{/key}
 		</JoyButton>
 	</JoyContainer>
 
@@ -115,9 +151,10 @@
 				<tr>
 					<th scope="col" class="px-6 py-3"> Requested At </th>
 					<th scope="col" class="px-6 py-3"> Requested By </th>
+					<th scope="col" class="px-6 py-3"> Items </th>
 					<th scope="col" class="px-6 py-3"> Request Status </th>
 					<th scope="col" class="px-6 py-3"> Approval Status </th>
-					<th scope="col" class="px-6 py-3"> Approved By </th>
+					<th scope="col" class="px-6 py-3"> Managed By </th>
 					<th scope="col" class="px-6 py-3"> Total </th>
 					<th scope="col" class="px-6 py-3">
 						<span class="sr-only">Edit</span>
@@ -131,13 +168,16 @@
 						<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
 							{cashRequest.expand?.requested_by.name}
 						</th>
-						<td class="px-6 py-4"> {cashRequest.request_status}</td>
+						<td class="px-6 py-4"> {requestedItems(cashRequest.items)}</td>
+						<td class="px-6 py-4"> {cashRequest.request_status || '---'}</td>
 						<td class="px-6 py-4">
-							<span class="badge badge-neutral uppercase">
+							<span class={approvalBadge(cashRequest.approval_status)}>
 								{cashRequest.approval_status}
 							</span>
 						</td>
-						<td class="px-6 py-4"> {cashRequest.expand?.approved_by?.name ?? 'None'}</td>
+						<td class="px-6 py-4 font-semibold text-gray-900">
+							{cashRequest.expand?.approved_by?.name ?? 'None'}</td
+						>
 						<td class="px-6 py-4"> {computedTotal(cashRequest.items)}</td>
 						<td class="px-6 py-4 text-right">
 							<a

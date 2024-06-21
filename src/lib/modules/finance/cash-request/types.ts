@@ -13,7 +13,16 @@ export interface CashRequestDto {
 	approval_status: ApprovalStatus
 }
 
-type ApprovalStatus = 'pending' | 'approved' | 'declined'
+export enum ApprovalStatus {
+	APPROVED = 'approved',
+	DECLINED = 'declined',
+	PENDING = 'pending',
+}
+
+export enum RequestStatus {
+	CANCELLED = 'cancelled',
+	RECEIVED = 'received',
+}
 
 export interface CashRequest extends RecordModel {
 	approved_by: string
@@ -23,6 +32,6 @@ export interface CashRequest extends RecordModel {
 	id: string
 	items: CashRequestItem[]
 	requested_by: string
-	request_status: 'cancelled' | 'received'
+	request_status: RequestStatus
 	updated: string
 }

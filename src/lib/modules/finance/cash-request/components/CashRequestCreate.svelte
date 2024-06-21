@@ -19,6 +19,7 @@
 	import { createEventDispatcher, tick } from 'svelte'
 	import { slide } from 'svelte/transition'
 	import JoyItemLoader from '$lib/components/Advanced/Loader/JoyItemLoader.svelte'
+	import { ctrlEnter } from '$lib/composables/useActions'
 
 	let drawer: JoyDrawer,
 		items: CashRequestItem[] = [],
@@ -69,6 +70,8 @@
 </script>
 
 <JoyDrawer bind:this={drawer} blocked={isLoading}>
+	<section use:ctrlEnter on:ctrl-enter={addItem} />
+
 	<JoyItemLoader {isLoading} />
 
 	<JoyContainer
