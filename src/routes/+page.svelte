@@ -12,6 +12,7 @@
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextSize, TextTag } from '$lib/components/Base/Text/types'
 	import { authResponse, signIn, user } from '$lib/modules/authentication'
+	import { Finance } from '$lib/routes/types'
 	import { Justify, ContainerPadding, ContainerGap } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
 	import { superForm } from 'sveltekit-superforms'
@@ -33,7 +34,7 @@
 					.then((response) => {
 						authResponse.set(response)
 						user.set(response.record)
-						goto('/home', { replaceState: true })
+						goto(Finance.CASH_REQUESTS, { replaceState: true })
 					})
 					.catch(({ response }) => {
 						console.error({ response })
