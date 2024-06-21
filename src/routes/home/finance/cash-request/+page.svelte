@@ -120,7 +120,7 @@
 			on:click={fetchCashRequests}
 			class="btn-circle relative"
 		>
-			{#key spinAnimate}
+			{#key isLoading == true}
 				<div class="inset-0 grid place-items-center" in:spin>
 					<JoyIcon icon="refresh-double" />
 				</div>
