@@ -5,14 +5,14 @@
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { activeRoute, type Route } from '$lib/routes'
-	import { routes } from '$lib/routes/finance'
+	import { financeRoutes } from '$lib/routes/finance'
 	import { ContainerGap, ContainerPadding } from '$lib/types'
 	import { tick } from 'svelte'
 
 	afterNavigate(() => {
-		const [route] = $routes.filter((r) => r.path === $page.route.id)
+		const [route] = $financeRoutes.filter((r) => r.path === $page.route.id)
 		$activeRoute = route
-		$routes = $routes
+		$financeRoutes = $financeRoutes
 	})
 
 	const setActive = async (route: Route) => {
@@ -42,7 +42,7 @@
 
 <JoyContainer gap={ContainerGap.NONE} class="w-full h-full">
 	<JoySidebar let:SidebarItem class="border-r w-[300px]">
-		{#each $routes as route (route.path)}
+		{#each $financeRoutes as route (route.path)}
 			<SidebarItem
 				icon={route.icon}
 				class={activeClass(route).sidebarItemClass}

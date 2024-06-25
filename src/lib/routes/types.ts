@@ -1,3 +1,7 @@
+export enum App {
+	INDEX = '/',
+}
+
 export enum Home {
 	FINANCE = '/home/finance',
 	INDEX = '/home',

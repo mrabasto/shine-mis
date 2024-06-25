@@ -1,3 +1,5 @@
+export * from './finance'
+
 import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 import type { IconName } from '$lib/components/Base/Icon/types'
 import { writable } from 'svelte/store'

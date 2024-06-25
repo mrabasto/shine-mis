@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { BorderRounded } from '$lib/types/Round'
+	import { uid } from 'radash'
 	import { InputSize, InputVariant } from './types'
 	import type { HTMLInputAttributes } from 'svelte/elements'
 
@@ -16,7 +17,7 @@
 
 	let clazz = ''
 	export let type: string = 'text'
-	export let id: string = 'input-id'
+	export let id: string = uid(10)
 	let inputClass = ''
 	export { clazz as class }
 

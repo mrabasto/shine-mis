@@ -14,12 +14,14 @@ import IconoirXmark from '~icons/iconoir/xmark'
 import IconoirWrench from '~icons/iconoir/wrench'
 import IconoirTrashSolid from '~icons/iconoir/trash-solid'
 import IconoirRefreshDouble from '~icons/iconoir/refresh-double'
+import IonExitOutline from '~icons/ion/exit-outline'
 import SolarHandMoneyLinear from '~icons/solar/hand-money-linear'
 
 export type UnplugIconName = keyof typeof icons
 export const icons = {
 	'check-circle': IconoirCheckCircle,
 	'crown-circle': IconoirCrownCircle,
+	'exit-outline': IonExitOutline,
 	'hand-money-linear': SolarHandMoneyLinear,
 	'info-circle': IconoirInfoCircle,
 	home: IconoirHome,
