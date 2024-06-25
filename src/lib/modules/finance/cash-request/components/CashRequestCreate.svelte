@@ -19,11 +19,16 @@
 	import { createEventDispatcher, tick } from 'svelte'
 	import { slide } from 'svelte/transition'
 	import JoyItemLoader from '$lib/components/Advanced/Loader/JoyItemLoader.svelte'
-	import { ctrlEnter } from '$lib/composables/useActions'
+	import { ctrlEnter, ctrlShiftEnter, escapePress } from '$lib/composables/useActions'
 	import { page } from '$app/stores'
+	import JoyToast from '$lib/components/Advanced/Toast/JoyToast.svelte'
+	import { message } from 'sveltekit-superforms'
+	import { ToastVariant } from '$lib/components/Advanced/Toast/types'
+	import JoyTooltip from '$lib/components/Advanced/Tooltip/JoyTooltip.svelte'
 
 	let items: CashRequestItem[] = [],
-		isLoading = false
+		isLoading = false,
+		toast: JoyToast
 
 	const dispatch = createEventDispatcher<CashRequestDispatch>()
 
@@ -50,6 +55,13 @@
 	}
 
 	const submit = () => {
+		if (notValid) {
+			return toast.fire({
+				message: 'Invalid items',
+				variant: ToastVariant.ERROR,
+			})
+		}
+
 		isLoading = true
 		createCashRequest(items)
 			.then((response) => {
@@ -78,7 +90,16 @@
 </script>
 
 <JoyDrawer blocked={isLoading} {isShown} {hide}>
-	<section use:ctrlEnter on:ctrl-enter={addItem} />
+	<section
+		use:ctrlEnter
+		use:escapePress
+		on:escape={hide}
+		on:ctrl-enter={addItem}
+		use:ctrlShiftEnter
+		on:ctrl-shift-enter={submit}
+	/>
+
+	<JoyToast bind:this={toast} target="shell" />
 
 	<JoyItemLoader {isLoading} />
 
@@ -99,15 +120,38 @@
 			<JoyText weight={FontWeight.NORMAL} size={TextSize.LG}>/</JoyText>
 			<JoyText weight={FontWeight.BOLD} size={TextSize.LG}>New Request</JoyText>
 		</JoyContainer>
+
+		<JoyTooltip class="ml-auto">
+			<JoyIcon icon="question-mark-circle" />
+
+			<JoyContainer
+				slot="tooltip-content"
+				class="w-full"
+				padding={ContainerPadding.XS}
+				col
+			>
+				<span>(Ctrl+Enter) Add item</span>
+				<span>(Ctrl+Shift+Enter) Submit items</span>
+			</JoyContainer>
+		</JoyTooltip>
 	</JoyContainer>
 
 	<JoyContainer
 		padding={ContainerPadding.NONE}
 		class="w-full px-8 py-0"
 		justify={Justify.BETWEEN}
+		alignItems={AlignItems.CENTER}
 	>
-		<JoyText size={TextSize.LG}>Items</JoyText>
-		<JoyButton label="Submit" bind:disabled={notValid} on:click={submit} />
+		<JoyText size={TextSize.LG} class="flex items-center gap-2">
+			<JoyIcon icon="shopping-bag-plus" />
+			Items
+		</JoyText>
+		<JoyButton
+			label="Submit"
+			variant={ButtonVariant.ACCENT}
+			bind:disabled={notValid}
+			on:click={submit}
+		/>
 	</JoyContainer>
 
 	<JoyContainer padding={ContainerPadding.XXS} col class="w-full">

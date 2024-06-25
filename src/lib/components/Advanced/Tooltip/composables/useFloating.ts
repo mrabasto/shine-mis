@@ -12,7 +12,7 @@ export const floating = async (options: FloatingOptions = { placement: 'right' }
 		middleware: sift([
 			offset(6),
 			flip(),
-			shift({ padding: 5 }),
+			shift({ padding: 15 }),
 			arrowElement ? arrow({ element: arrowElement }) : null,
 		]),
 	})

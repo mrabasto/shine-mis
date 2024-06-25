@@ -12,6 +12,10 @@ type CtrlEnterAttributes = {
 	'on:ctrl-enter'?: (event: CustomEvent) => void
 }
 
+type CtrlShiftEnterAttributes = {
+	'on:ctrl-shift-enter'?: (event: CustomEvent) => void
+}
+
 type EscapePressAttributes = {
 	'on:escape'?: (event: CustomEvent) => void
 }
@@ -28,6 +32,7 @@ type clickOutsideAction = Action<
 	ClickOutsideAttributes
 >
 type ctrlEnterAction = Action<HTMLElement, any, CtrlEnterAttributes>
+type ctrlShiftEnterAction = Action<HTMLElement, any, CtrlShiftEnterAttributes>
 type escapePressAction = Action<HTMLElement, any, EscapePressAttributes>
 
 export const clickMe: clickMeAction = (element) => {
@@ -87,8 +92,38 @@ export const ctrlEnter: ctrlEnterAction = (element) => {
 		const { blocked } = element.dataset
 		if (blocked === 'true') return
 
-		if (event.ctrlKey && event.key.toUpperCase() == 'ENTER') {
+		if (
+			event.ctrlKey &&
+			!event.shiftKey &&
+			!event.altKey &&
+			event.key.toUpperCase() == 'ENTER'
+		) {
 			const escapeEvent = new CustomEvent('ctrl-enter')
+			element.dispatchEvent(escapeEvent)
+		}
+	}
+
+	window.addEventListener('keydown', handle, true)
+
+	return {
+		destroy() {
+			window.removeEventListener('keydown', handle, true)
+		},
+	}
+}
+
+export const ctrlShiftEnter: ctrlShiftEnterAction = (element) => {
+	function handle(event: KeyboardEvent) {
+		const { blocked } = element.dataset
+		if (blocked === 'true') return
+
+		if (
+			event.ctrlKey &&
+			event.shiftKey &&
+			!event.altKey &&
+			event.key.toUpperCase() == 'ENTER'
+		) {
+			const escapeEvent = new CustomEvent('ctrl-shift-enter')
 			element.dispatchEvent(escapeEvent)
 		}
 	}

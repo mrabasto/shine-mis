@@ -1,10 +1,9 @@
 <script lang="ts">
+	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
 	import JoyContextMenu from '$lib/components/Advanced/ContextMenu/JoyContextMenu.svelte'
-	import JoyFloater from '$lib/components/Advanced/Floater/JoyFloater.svelte'
 	import JoySidebar from '$lib/components/Advanced/Sidebar/JoySidebar.svelte'
 	import JoyTooltip from '$lib/components/Advanced/Tooltip/JoyTooltip.svelte'
-	import { ButtonVariant } from '$lib/components/Base/Button'
-	import JoyButton from '$lib/components/Base/Button/JoyButton.svelte'
+	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button'
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
 	import { signOut } from '$lib/modules/authentication'
 	import { routes } from '$lib/routes'
@@ -30,15 +29,21 @@
 		<JoyContextMenu class="mt-auto hover:bg-secondary/25 hover:text-primary w-full">
 			<SidebarItem
 				type="button"
-				icon="settings"
+				icon="hambuger-menu-line-duotone"
 				let:show
 				on:click={show}
 				slot="context-target"
 			/>
 			<svelte:fragment slot="context-contents">
-				<JoyButton variant={ButtonVariant.GHOST} class="w-full" on:click={signOut}
-					>Sign out</JoyButton
+				<JoyIconButton
+					variant={ButtonVariant.GHOST}
+					size={ButtonSize.MD}
+					class="w-full justify-start"
+					on:click={signOut}
+					icon="exit-outline"
 				>
+					Sign out
+				</JoyIconButton>
 			</svelte:fragment>
 		</JoyContextMenu>
 	</JoySidebar>

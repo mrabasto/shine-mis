@@ -30,14 +30,14 @@
 		use:clickMe
 		on:click-me={hide}
 		in:fade={{ duration: 100 }}
-		out:fade={{ duration: 100 }}
+		out:fade={{ duration: 100, delay: 100 }}
 		data-blocked={blocked}
 	>
 		<div
 			class="w-full lg:w-2/3 xl:w-3/5 2xl:w-1/3 overflow-auto"
 			transition:fly={{ duration: 200, x: 200 }}
 		>
-			<div class="h-full" transition:fade={{ duration: 100 }}>
+			<div class="h-full" transition:fade={{ duration: 200 }}>
 				<JoyContainer class={slotContainerClass} col>
 					<slot />
 				</JoyContainer>

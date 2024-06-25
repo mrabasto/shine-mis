@@ -2,21 +2,30 @@
 	import { floating } from '$lib/components/Advanced/Tooltip/composables/useFloating'
 	import { clickOutside } from '$lib/composables/useActions'
 	import type { Placement } from '@floating-ui/dom'
-	import { onMount } from 'svelte'
+	import { uid } from 'radash'
+	import { onMount, tick } from 'svelte'
+	import { fly } from 'svelte/transition'
 
 	let clazz = ''
 	export { clazz as class }
 	export let floaterClass = ''
 	export let placement: Placement = 'right'
+
 	let target: HTMLDivElement, floater: HTMLDivElement, arrowElement: HTMLDivElement
 
-	const show = () => {
-		floater.style.display = 'block'
+	let floaterTargetId = 'floater-target-' + uid(10)
+	let floaterId = 'floater-' + uid(10)
+
+	let transitionKey = false
+
+	const show = async () => {
+		transitionKey = true
+		await tick()
 		update()
 	}
 
-	const hide = () => {
-		floater.style.display = ''
+	const hide = async () => {
+		transitionKey = false
 	}
 
 	const update = () =>
@@ -32,27 +41,29 @@
 	})
 </script>
 
-<div bind:this={target} class={clazz}>
+<div bind:this={target} class={clazz} id={floaterTargetId}>
 	<slot name="floater-target" {show} />
 </div>
 
-<div
-	bind:this={floater}
-	id="floater"
-	role="tooltip"
-	class={floaterClass}
-	use:clickOutside
-	on:outside={hide}
->
-	<slot name="floater-contents">
-		<span>Contents go here</span>
-	</slot>
-	<div bind:this={arrowElement} id="arrow"></div>
-</div>
+{#if transitionKey}
+	<div
+		bind:this={floater}
+		id={floaterId}
+		role="tooltip"
+		class={floaterClass}
+		use:clickOutside={[floaterTargetId]}
+		on:outside={hide}
+		in:fly={{ duration: 100, opacity: 1, y: 10 }}
+		out:fly={{ duration: 100, opacity: 0, y: 10 }}
+	>
+		<slot name="floater-contents"><span>Contents go here</span></slot>
+		<div bind:this={arrowElement} id="arrow"></div>
+	</div>
+{/if}
 
 <style lang="postcss">
-	#floater {
-		@apply hidden absolute w-max top-0 left-0;
+	[role='tooltip'] {
+		@apply absolute w-max top-0 left-0;
 	}
 
 	#arrow {

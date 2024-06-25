@@ -25,6 +25,8 @@
 			placement: 'right',
 		})
 
+	$: tooltipTargetClass = `${clazz} cursor-pointer`
+
 	onMount(async () => {
 		update(button, tooltip, arrowElement)
 	})
@@ -38,13 +40,17 @@
 	bind:this={button}
 	aria-describedby="tooltip"
 	role="tooltip"
-	class={clazz}
+	class={tooltipTargetClass}
 >
 	<slot />
 </div>
 
 <div bind:this={tooltip} id="tooltip" role="tooltip">
-	{label}
+	{#if !$$slots['tooltip-content']}
+		{label}
+	{:else}
+		<slot name="tooltip-content" />
+	{/if}
 	<div bind:this={arrowElement} id="arrow"></div>
 </div>
 

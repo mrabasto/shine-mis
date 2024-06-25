@@ -15,8 +15,11 @@ import IconoirWrench from '~icons/iconoir/wrench'
 import IconoirTrashSolid from '~icons/iconoir/trash-solid'
 import IconoirRefreshDouble from '~icons/iconoir/refresh-double'
 import IconoirNavArrowUp from '~icons/iconoir/nav-arrow-up'
+import IconoirShoppingBagPlus from '~icons/iconoir/shopping-bag-plus'
+import IconoirQuestionMarkCircle from '~icons/iconoir/question-mark-circle'
 import IonExitOutline from '~icons/ion/exit-outline'
 import SolarHandMoneyLinear from '~icons/solar/hand-money-linear'
+import SolarHamburgerMenuLineDuotone from '~icons/solar/hamburger-menu-line-duotone'
 
 export type UnplugIconName = keyof typeof icons
 export const icons = {
@@ -26,12 +29,15 @@ export const icons = {
 	'hand-money-linear': SolarHandMoneyLinear,
 	'info-circle': IconoirInfoCircle,
 	home: IconoirHome,
+	'hambuger-menu-line-duotone': SolarHamburgerMenuLineDuotone,
 	'money-square': IconoirMoneySquare,
 	'nav-arrow-up': IconoirNavArrowUp,
 	'password-cursor': IconoirPasswordCursor,
 	'plus-circle-solid': IconoirPlusCircleSolid,
+	'question-mark-circle': IconoirQuestionMarkCircle,
 	'refresh-double': IconoirRefreshDouble,
 	settings: IconoirSettings,
+	'shopping-bag-plus': IconoirShoppingBagPlus,
 	'sparks-solid': IconoirSparksSolid,
 	'trash-solid': IconoirTrashSolid,
 	'user-circle': IconoirUserCircle,
