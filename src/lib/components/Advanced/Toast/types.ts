@@ -4,3 +4,9 @@ export enum ToastVariant {
 	SUCCESS = 'border-success',
 	WARNING = 'border-warning',
 }
+
+export interface ToastOptions {
+	message: string
+	noTimer?: boolean
+	variant?: ToastVariant
+}

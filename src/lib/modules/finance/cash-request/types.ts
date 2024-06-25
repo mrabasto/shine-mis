@@ -11,6 +11,7 @@ export interface CashRequestDto {
 	items: CashRequestItem[]
 	requested_by: string
 	approval_status: ApprovalStatus
+	total_amount: number
 }
 
 export enum ApprovalStatus {
@@ -31,6 +32,7 @@ export interface CashRequest extends RecordModel {
 	expand?: { requested_by: User; approved_by: User }
 	id: string
 	items: CashRequestItem[]
+	total_amount: number
 	requested_by: string
 	request_status: RequestStatus
 	updated: string

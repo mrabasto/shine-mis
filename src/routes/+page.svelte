@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation'
 	import JoyLoginBg from '$lib/components/Advanced/Svg/JoyLoginBG.svelte'
 	import JoyToast from '$lib/components/Advanced/Toast/JoyToast.svelte'
+	import { ToastVariant } from '$lib/components/Advanced/Toast/types.js'
 	import JoyButton from '$lib/components/Base/Button/JoyButton.svelte'
 	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button/types.js'
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
@@ -38,7 +39,10 @@
 					})
 					.catch(({ response }) => {
 						console.error({ response })
-						toast.toggleShown(response.message)
+						toast.fire({
+							message: String(response.message),
+							variant: ToastVariant.ERROR,
+						})
 					})
 					.finally(() => (isAuthenticating = false))
 			}

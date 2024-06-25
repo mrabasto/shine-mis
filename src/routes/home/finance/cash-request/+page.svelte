@@ -22,9 +22,9 @@
 	import { onMount } from 'svelte'
 	import { dateFromFormat } from '$lib/composables/useDateUtils'
 	import { spin } from '$lib/composables/useAnimations'
+	import { pushState } from '$app/navigation'
 
 	let toast: JoyToast
-	let cashRequestCreate: CashRequestCreate
 	let toastVariant: ToastVariant = ToastVariant.INFO
 	let spinAnimate = false,
 		isLoading = false
@@ -46,31 +46,35 @@
 		if (isLoading) return
 		spinAnimate = !spinAnimate
 		isLoading = true
-		toast.setVariant(ToastVariant.INFO)
-		toast.setNoTimer(true)
-		toast.toggleShown('Loading cash requests ..')
+
+		toast.fire({
+			message: 'Loading cash requests ..',
+			noTimer: true,
+		})
 
 		getCashRequests()
 			.then((response) => {
-				toast.toggleShown()
+				toast.hide()
 				$cashRequests = response.items
 			})
 			.catch((response) => {
-				toast.setNoTimer(false)
-				toast.setVariant(ToastVariant.ERROR)
-				toast.toggleShown(response.message)
+				toast.fire({
+					message: response.message,
+					variant: ToastVariant.ERROR,
+				})
 			})
 			.finally(() => (isLoading = false))
 	}
 
 	const errorCashRequest = (event: CustomEvent<string>) => {
-		toast.setNoTimer(false)
-		toast.setVariant(ToastVariant.ERROR)
-		toast.toggleShown(event.detail)
+		toast.fire({
+			message: event.detail,
+			variant: ToastVariant.ERROR,
+		})
 	}
 
 	const newRequest = () => {
-		cashRequestCreate.show()
+		pushState('', { cashRequestCreate: true })
 	}
 
 	const approvalBadge = (approvalStatus: ApprovalStatus) => {
@@ -102,7 +106,6 @@
 </script>
 
 <CashRequestCreate
-	bind:this={cashRequestCreate}
 	on:cash-request-create={fetchCashRequests}
 	on:cash-request-error={errorCashRequest}
 />
@@ -178,7 +181,9 @@
 						<td class="px-6 py-4 font-semibold text-gray-900">
 							{cashRequest.expand?.approved_by?.name ?? 'None'}</td
 						>
-						<td class="px-6 py-4"> {computedTotal(cashRequest.items)}</td>
+						<td class="px-6 py-4">
+							{cashRequest.total_amount || computedTotal(cashRequest.items)}</td
+						>
 						<td class="px-6 py-4 text-right">
 							<a
 								href="/"

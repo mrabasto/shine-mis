@@ -20,9 +20,9 @@
 	import { slide } from 'svelte/transition'
 	import JoyItemLoader from '$lib/components/Advanced/Loader/JoyItemLoader.svelte'
 	import { ctrlEnter } from '$lib/composables/useActions'
+	import { page } from '$app/stores'
 
-	let drawer: JoyDrawer,
-		items: CashRequestItem[] = [],
+	let items: CashRequestItem[] = [],
 		isLoading = false
 
 	const dispatch = createEventDispatcher<CashRequestDispatch>()
@@ -37,7 +37,12 @@
 
 	const addItem = () => {
 		if (isInLimit) return
-		items = [...items, newItem()]
+		const nItem = newItem()
+		items = [...items, nItem]
+
+		tick().then(() => {
+			document.getElementById('input-' + nItem.id)?.focus()
+		})
 	}
 
 	const removeItem = (item: CashRequestItem) => {
@@ -59,17 +64,20 @@
 			.finally(() => (isLoading = false))
 	}
 
-	export const show = () => drawer.show()
-	export const hide = () => drawer.hide()
+	export const show = () => (isShown = true)
+	export const hide = () => {
+		history.back()
+	}
 
 	$: notValid =
 		items.length === 0 ||
 		items.some((i) => i.label.length === 0 || !i.price || i.price === 0)
 
 	$: isInLimit = items.length === maxLimit
+	$: isShown = $page.state.cashRequestCreate
 </script>
 
-<JoyDrawer bind:this={drawer} blocked={isLoading}>
+<JoyDrawer blocked={isLoading} {isShown} {hide}>
 	<section use:ctrlEnter on:ctrl-enter={addItem} />
 
 	<JoyItemLoader {isLoading} />
@@ -82,7 +90,7 @@
 		<JoyButton
 			class="rounded-full btn-circle"
 			variant={ButtonVariant.GHOST}
-			on:click={drawer.hide}
+			on:click={hide}
 		>
 			<JoyIcon icon="xmark" />
 		</JoyButton>
@@ -115,14 +123,22 @@
 						class="w-full"
 						alignItems={AlignItems.CENTER}
 						justify={Justify.BETWEEN}
-						gap={ContainerGap.NONE}
+						gap={ContainerGap.XXS}
 					>
-						<JoyInput bordered placeholder="Item" bind:value={item.label} />
+						<JoyInput
+							bordered
+							placeholder="Item"
+							bind:value={item.label}
+							class="grow"
+							id={item.id}
+						/>
 						<JoyInput
 							bordered
 							placeholder="Amount"
 							type="number"
 							bind:value={item.price}
+							class="grow"
+							id={'amount-' + item.id}
 						/>
 
 						<JoyButton

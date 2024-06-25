@@ -3,7 +3,7 @@
 	import { fly } from 'svelte/transition'
 	import { teleport } from './actions'
 	import { sleep } from 'radash'
-	import { ToastVariant } from './types'
+	import { ToastVariant, type ToastOptions } from './types'
 	import type { IconName } from '$lib/components/Base/Icon/types'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 
@@ -15,6 +15,18 @@
 	export let sleepInSeconds: number = 3
 	export let variant: ToastVariant = ToastVariant.ERROR
 
+	export const fire = (
+		toastOptions: ToastOptions = {
+			message: '',
+			noTimer,
+			variant,
+		}
+	) => {
+		setNoTimer(toastOptions.noTimer)
+		setVariant(toastOptions.variant!)
+		toggleShown(toastOptions.message)
+	}
+
 	export const toggleShown = (newMessage?: string) => {
 		if (sleeping) return
 
@@ -25,6 +37,7 @@
 		sleeping = true
 
 		sleep(sleepInSeconds * 1000).then(() => {
+			if (!sleeping) return
 			sleeping = false
 			hide()
 		})
@@ -32,8 +45,8 @@
 
 	export const show = () => (isShown = true)
 	export const hide = () => (isShown = false)
-	export const setVariant = (newVariant: ToastVariant) => (variant = newVariant)
 	export const setNoTimer = (timer = false) => (noTimer = timer)
+	export const setVariant = (newVariant: ToastVariant) => (variant = newVariant)
 
 	export let target: string
 

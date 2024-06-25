@@ -16,6 +16,7 @@
 
 	let clazz = ''
 	export let type: string = 'text'
+	export let id: string = 'input-id'
 	let inputClass = ''
 	export { clazz as class }
 
@@ -30,19 +31,34 @@
 			${variant} ${size} ${rounded} ${buildClass} ${clazz}`
 	}
 
+	$: id = `input-${id}`
+
 	const nodeType = (node: HTMLInputElement) => {
 		node.type = type
+	}
+
+	const nodeId = (node: HTMLInputElement) => {
+		node.id = id
 	}
 </script>
 
 {#if $$slots['labeled-l'] || $$slots['labeled-r']}
 	<label class={`${inputClass} flex items-center gap-2`}>
 		<slot name="labeled-l" />
-		<input use:nodeType {name} {placeholder} bind:value {...attributes} class="grow" />
+		<input
+			use:nodeId
+			use:nodeType
+			{name}
+			{placeholder}
+			bind:value
+			{...attributes}
+			class="grow"
+		/>
 		<slot name="labeled-r" />
 	</label>
 {:else}
 	<input
+		use:nodeId
 		use:nodeType
 		{name}
 		{placeholder}

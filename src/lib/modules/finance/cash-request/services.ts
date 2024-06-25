@@ -27,6 +27,10 @@ export const createCashRequest = (items: CashRequestItem[]): Promise<CashRequest
 			requested_by: pb.authStore.model?.id,
 			approval_status: ApprovalStatus.PENDING,
 			items,
+			total_amount: items.reduce((total, item) => {
+				total += Number(item.price)
+				return total
+			}, 0),
 		}
 
 		pb.collection<CashRequest>('cash_requests')
