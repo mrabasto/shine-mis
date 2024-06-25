@@ -8,13 +8,21 @@
 	let clazz = ''
 	export { clazz as class }
 	export let href = '#'
+	export let type: 'a' | 'button' = 'a'
 
 	$: itemClass = `w-full p-4 gap-2 
-		transition-colors flex items-center
+		transition-colors flex items-center ${!$$slots['label'] && 'justify-center'}
 		overflow-hidden group ${clazz}`
 </script>
 
-<a {href} class={itemClass} on:click>
-	<JoyIcon {icon} size={Size.XL} />
-	<slot name="label" />
-</a>
+{#if type === 'a'}
+	<a {href} class={itemClass} on:click>
+		<JoyIcon {icon} size={Size.LG} />
+		<slot name="label" />
+	</a>
+{:else}
+	<button class={itemClass} on:click>
+		<JoyIcon {icon} size={Size.LG} />
+		<slot name="label" />
+	</button>
+{/if}

@@ -1,7 +1,11 @@
 import { DateTime } from 'luxon'
-const format = 'YYYY-MM-DD'
-export const dateFromFormat = (date: string) => {
-	const _fmt = DateTime.fromFormat(date.split(' ')[0], format)
-	// console.log({ fmt })
-	return date
+const format = 'yyyy LLL dd'
+export const dateFromISO = (date: string) => {
+	const [tDate, _time] = date.split(' ')
+	const fmt = DateTime.fromISO(tDate)
+	return fmt
+}
+
+export const commonFormat = (date: string) => {
+	return dateFromISO(date).toFormat(format)
 }

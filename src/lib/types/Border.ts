@@ -5,6 +5,7 @@ export enum Border {
 	SM = 'border-4',
 	XL = 'border-10',
 	XS = 'border-2',
+	XXS = 'border',
 }
 
 export enum BorderColor {

@@ -1,9 +1,9 @@
 import { redirectIfNot } from '$lib/composables/usePermission.js'
-import { getAuthStore } from '$lib/modules/app'
+import { App } from '$lib/modules/app'
 import { authStore, user, type User } from '$lib/modules/authentication'
 
 export const load = () => {
-	const auth = getAuthStore()
+	const auth = App.getAuthStore()
 	authStore.set(auth)
 	user.set(auth.model as User)
 

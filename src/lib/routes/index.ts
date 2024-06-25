@@ -20,15 +20,18 @@ export const routes = writable<Route[]>([
 	{
 		path: Home.INDEX,
 		icon: 'home',
+		label: 'Home',
 	},
 	{
 		path: ShineSchool.INDEX,
 		icon: 'crown-circle',
+		label: 'Shine School',
 	},
 
 	{
 		path: Finance.INDEX,
 		icon: 'money-square',
 		isShown: true,
+		label: 'Finance',
 	},
 ])

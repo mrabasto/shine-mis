@@ -28,12 +28,9 @@ export enum RequestStatus {
 export interface CashRequest extends RecordModel {
 	approved_by: string
 	approval_status: ApprovalStatus
-	created: string
 	expand?: { requested_by: User; approved_by: User }
-	id: string
 	items: CashRequestItem[]
 	total_amount: number
 	requested_by: string
 	request_status: RequestStatus
-	updated: string
 }

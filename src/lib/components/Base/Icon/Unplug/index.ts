@@ -14,6 +14,7 @@ import IconoirXmark from '~icons/iconoir/xmark'
 import IconoirWrench from '~icons/iconoir/wrench'
 import IconoirTrashSolid from '~icons/iconoir/trash-solid'
 import IconoirRefreshDouble from '~icons/iconoir/refresh-double'
+import IconoirNavArrowUp from '~icons/iconoir/nav-arrow-up'
 import IonExitOutline from '~icons/ion/exit-outline'
 import SolarHandMoneyLinear from '~icons/solar/hand-money-linear'
 
@@ -26,6 +27,7 @@ export const icons = {
 	'info-circle': IconoirInfoCircle,
 	home: IconoirHome,
 	'money-square': IconoirMoneySquare,
+	'nav-arrow-up': IconoirNavArrowUp,
 	'password-cursor': IconoirPasswordCursor,
 	'plus-circle-solid': IconoirPlusCircleSolid,
 	'refresh-double': IconoirRefreshDouble,

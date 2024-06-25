@@ -20,7 +20,7 @@
 	import { BorderRounded, Justify } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
 	import { onMount } from 'svelte'
-	import { dateFromFormat } from '$lib/composables/useDateUtils'
+	import { commonFormat } from '$lib/composables/useDateUtils'
 	import { spin } from '$lib/composables/useAnimations'
 	import { pushState } from '$app/navigation'
 
@@ -167,7 +167,7 @@
 			<tbody>
 				{#each $cashRequests as cashRequest (cashRequest.id)}
 					<tr class="bg-white hover:bg-base-100">
-						<td class="px-6 py-4"> {dateFromFormat(cashRequest.created)}</td>
+						<td class="px-6 py-4"> {commonFormat(cashRequest.created)}</td>
 						<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
 							{cashRequest.expand?.requested_by.name}
 						</th>
