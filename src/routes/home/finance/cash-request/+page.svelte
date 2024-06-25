@@ -23,11 +23,11 @@
 	import { commonFormat } from '$lib/composables/useDateUtils'
 	import { spin } from '$lib/composables/useAnimations'
 	import { pushState } from '$app/navigation'
+	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
 
 	let toast: JoyToast
 	let toastVariant: ToastVariant = ToastVariant.INFO
-	let spinAnimate = false,
-		isLoading = false
+	let isLoading = false
 
 	onMount(() => {
 		if ($cashRequests.length) return
@@ -44,7 +44,6 @@
 
 	const fetchCashRequests = async () => {
 		if (isLoading) return
-		spinAnimate = !spinAnimate
 		isLoading = true
 
 		toast.fire({
@@ -159,14 +158,14 @@
 					<th scope="col" class="px-6 py-3"> Approval Status </th>
 					<th scope="col" class="px-6 py-3"> Managed By </th>
 					<th scope="col" class="px-6 py-3"> Total </th>
-					<th scope="col" class="px-6 py-3">
+					<th scope="col" class="px-6 py-3 sticky right-0 bg-base-200">
 						<span class="sr-only">Edit</span>
 					</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each $cashRequests as cashRequest (cashRequest.id)}
-					<tr class="bg-white hover:bg-base-100">
+					<tr class="bg-white hover:bg-base-100 cursor-pointer">
 						<td class="px-6 py-4"> {commonFormat(cashRequest.created)}</td>
 						<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
 							{cashRequest.expand?.requested_by.name}
@@ -184,12 +183,12 @@
 						<td class="px-6 py-4">
 							{cashRequest.total_amount || computedTotal(cashRequest.items)}</td
 						>
-						<td class="px-6 py-4 text-right">
-							<a
-								href="/"
-								class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-								>Edit</a
-							>
+						<td class="text-right sticky right-0">
+							<JoyIconButton
+								icon="arrow-right"
+								plain
+								class="w-full h-full grid place-items-center"
+							/>
 						</td>
 					</tr>
 				{/each}

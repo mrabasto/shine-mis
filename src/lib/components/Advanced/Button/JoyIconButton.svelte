@@ -2,7 +2,7 @@
 	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button/types'
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
-	import type { IconName } from '$lib/components/Base/Icon/types'
+	import { Size, type IconName } from '$lib/components/Base/Icon/types'
 	export let icon: IconName | UnplugIconName = 'crown-circle'
 	export let label: string | undefined = undefined
 	export let size: ButtonSize = ButtonSize.SM
@@ -14,6 +14,8 @@
 	export let noAnimation: boolean = true
 	let clazz = ''
 	export { clazz as class }
+	export let iconSize: Size = Size.SM
+
 	let btnClass = clazz
 
 	$: if (!plain) {
@@ -27,7 +29,7 @@
 </script>
 
 <button class={btnClass} on:click use:nodeType {disabled}>
-	<JoyIcon {icon} />
+	<JoyIcon {icon} size={iconSize} />
 	<slot />
 	{#if label}
 		{label}

@@ -130,6 +130,7 @@
 				padding={ContainerPadding.XS}
 				col
 			>
+				<span>(Esc) Close</span>
 				<span>(Ctrl+Enter) Add item</span>
 				<span>(Ctrl+Shift+Enter) Submit items</span>
 			</JoyContainer>
