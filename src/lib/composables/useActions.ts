@@ -22,7 +22,11 @@ type EscapeConfig = {
 }
 
 type clickMeAction = Action<HTMLElement, any, ClickMeAttributes>
-type clickOutsideAction = Action<HTMLElement, any, ClickOutsideAttributes>
+type clickOutsideAction = Action<
+	HTMLElement,
+	Array<string> | undefined,
+	ClickOutsideAttributes
+>
 type ctrlEnterAction = Action<HTMLElement, any, CtrlEnterAttributes>
 type escapePressAction = Action<HTMLElement, any, EscapePressAttributes>
 
@@ -50,7 +54,10 @@ export const clickMe: clickMeAction = (element) => {
 	}
 }
 
-export const clickOutside: clickOutsideAction = (element) => {
+export const clickOutside: clickOutsideAction = (
+	element,
+	otherElements?: Array<string>
+) => {
 	function handle(event: MouseEvent) {
 		const target = event.target as HTMLElement
 
@@ -58,7 +65,9 @@ export const clickOutside: clickOutsideAction = (element) => {
 
 		if (blocked === 'true') return
 
-		if (element && !element.contains(target)) {
+		const checkClosest = () => otherElements?.some((el) => target.closest('#' + el))
+
+		if (element && !element.contains(target) && !checkClosest()) {
 			const clickOutsideEvent = new CustomEvent('outside')
 			element.dispatchEvent(clickOutsideEvent)
 		}
