@@ -11,7 +11,7 @@
 	import type { CashRequestItem } from '$lib/modules/finance/cash-request/types'
 	import JoyInput from '$lib/components/Base/Input/JoyInput.svelte'
 	import { uid } from 'radash'
-	import { createCashRequest } from '$lib/modules/finance/cash-request/services'
+	import { cashRequestService } from '$lib/modules/finance/cash-request/services'
 	import {
 		CashRequestEvent,
 		type CashRequestDispatch,
@@ -22,17 +22,17 @@
 	import { ctrlEnter, ctrlShiftEnter, escapePress } from '$lib/composables/useActions'
 	import { page } from '$app/stores'
 	import JoyToast from '$lib/components/Advanced/Toast/JoyToast.svelte'
-	import { message } from 'sveltekit-superforms'
 	import { ToastVariant } from '$lib/components/Advanced/Toast/types'
 	import JoyTooltip from '$lib/components/Advanced/Tooltip/JoyTooltip.svelte'
+
+	export let maxLimit = 10
 
 	let items: CashRequestItem[] = [],
 		isLoading = false,
 		toast: JoyToast
 
 	const dispatch = createEventDispatcher<CashRequestDispatch>()
-
-	export let maxLimit = 10
+	const { createCashRequest } = cashRequestService()
 
 	const newItem = () => ({
 		id: uid(10),

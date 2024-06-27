@@ -107,9 +107,19 @@
 			</JoyContainer>
 
 			<JoyContainer justify={Justify.END} class="w-full mt-4">
-				<JoyButton size={ButtonSize.MD} variant={ButtonVariant.PRIMARY} type="submit"
-					>Sign in to account</JoyButton
+				<JoyButton
+					size={ButtonSize.MD}
+					variant={ButtonVariant.PRIMARY}
+					type="submit"
+					disabled={isAuthenticating}
+					class="items-center gap-2"
 				>
+					{#if isAuthenticating}
+						<JoyIcon icon="loading" />
+					{/if}
+
+					Sign in to account
+				</JoyButton>
 			</JoyContainer>
 		</JoyContainer>
 	</form>

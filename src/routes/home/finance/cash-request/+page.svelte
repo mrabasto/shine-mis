@@ -24,22 +24,35 @@
 	import { spin } from '$lib/composables/useAnimations'
 	import { pushState } from '$app/navigation'
 	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
+	import { departmentService } from '$lib/modules/departments'
+	import { cashRequestService } from '$lib/modules/finance/cash-request'
 
 	let toast: JoyToast
 	let toastVariant: ToastVariant = ToastVariant.INFO
 	let isLoading = false
+	const { loadDepartments } = departmentService()
+	const { loadCashRequests } = cashRequestService()
 
-	onMount(() => {
+	onMount(async () => {
+		const loadDepartmentsError = await loadDepartments()
+
+		if (loadDepartmentsError) {
+			toast.fire({
+				message: 'Error loading departments',
+				variant: ToastVariant.ERROR,
+			})
+		}
+
 		if ($cashRequests.length) return
 
-		getCashRequests()
-			.then((response) => {
-				$cashRequests = response.items
+		const loadCashRequestsError = await loadCashRequests()
+
+		if (loadCashRequestsError) {
+			toast.fire({
+				message: loadCashRequestsError.message,
+				variant: ToastVariant.ERROR,
 			})
-			.catch((response) => {
-				toast.setVariant(ToastVariant.ERROR)
-				toast.toggleShown(response.message)
-			})
+		}
 	})
 
 	const fetchCashRequests = async () => {

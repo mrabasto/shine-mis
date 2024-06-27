@@ -10,7 +10,7 @@
 
 	$: display = isShown ? 'absolute flex' : 'hidden'
 	$: showDisplay = !isShown ? 'absolute flex' : 'hidden'
-	$: trackerClass = `-translate-x-1/2 start-1/2 end-1/2 bottom-1 bg-base-200/25 
+	$: trackerClass = `-translate-x-1/2 start-1/2 end-1/2 bottom-1 bg-white/25 
 		rounded-lg z-[9999] gap-2 items-center backdrop-blur-sm overflow-hidden`
 	$: displayClass = `${display} ${trackerClass} w-[500px] p-4`
 	$: showDisplayClass = `${showDisplay} ${trackerClass} w-[100px] justify-center`

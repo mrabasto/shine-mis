@@ -6,11 +6,10 @@ const collection = 'user_role'
 export const getUserRoles = (user: User): Promise<UserRole> => {
 	return new Promise((resolve, reject) => {
 		pb.collection<UserRole>(collection)
-			.getList(1, 30, {
-				filter: `user_id = "${user.id}"`,
+			.getFirstListItem(`user_id = "${user.id}"`, {
 				expand: 'role_id',
 			})
-			.then((response) => resolve(response.items[0]))
+			.then((response) => resolve(response))
 			.catch((response) => reject(response))
 	})
 }

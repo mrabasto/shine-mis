@@ -3,7 +3,7 @@
 </script>
 
 <div id="shell" class="relative overflow-hidden">
-	<JoyContainer col class="w-screen h-[100vh] overflow-hidden">
+	<JoyContainer col class="w-screen h-[100vh] overflow-hidden relative">
 		<slot />
 	</JoyContainer>
 </div>

@@ -2,18 +2,48 @@
 	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
 	import JoyContextMenu from '$lib/components/Advanced/ContextMenu/JoyContextMenu.svelte'
 	import JoySidebar from '$lib/components/Advanced/Sidebar/JoySidebar.svelte'
+	import JoyToast from '$lib/components/Advanced/Toast/JoyToast.svelte'
+	import { ToastVariant } from '$lib/components/Advanced/Toast/types.js'
 	import JoyTooltip from '$lib/components/Advanced/Tooltip/JoyTooltip.svelte'
 	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button'
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
-	import { signOut } from '$lib/modules/authentication'
+	import { App } from '$lib/modules/app'
+	import { authStore, signOut, user, type User } from '$lib/modules/authentication'
+	import { getUserRoles } from '$lib/modules/user-roles/services'
+	import { currentUserRoles } from '$lib/modules/user-roles/stores'
 	import { routes } from '$lib/routes'
 	import { ContainerGap, ContainerPadding } from '$lib/types'
+	import { onMount } from 'svelte'
+
+	export let data
+	let toast: JoyToast
+
+	onMount(() => {
+		App.isLoading.set(true)
+		$authStore = data.auth
+		$user = data.auth.model as User
+
+		getUserRoles($user)
+			.then((userRole) => {
+				if (userRole.expand?.role_id) {
+					$currentUserRoles = userRole.expand.role_id
+				}
+			})
+			.catch(() =>
+				toast.fire({
+					message: 'Failed to retrieve user roles',
+					variant: ToastVariant.ERROR,
+				})
+			)
+			.finally(() => App.isLoading.set(false))
+	})
 </script>
 
 <JoyContainer
 	class="w-full h-full overflow-x-auto overflow-y-hidden"
 	gap={ContainerGap.NONE}
 >
+	<JoyToast bind:this={toast} target="shell" />
 	<JoySidebar let:SidebarItem class="border-r">
 		{#each $routes as route (route.path)}
 			{#if route.isShown}

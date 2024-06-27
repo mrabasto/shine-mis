@@ -21,6 +21,7 @@ import IconoirArrowRight from '~icons/iconoir/arrow-right'
 import IonExitOutline from '~icons/ion/exit-outline'
 import SolarHandMoneyLinear from '~icons/solar/hand-money-linear'
 import SolarHamburgerMenuLineDuotone from '~icons/solar/hamburger-menu-line-duotone'
+import EosIconsLoading from '~icons/eos-icons/loading';
 
 export type UnplugIconName = keyof typeof icons
 export const icons = {
@@ -33,6 +34,7 @@ export const icons = {
 	home: IconoirHome,
 	'hambuger-menu-line-duotone': SolarHamburgerMenuLineDuotone,
 	'money-square': IconoirMoneySquare,
+	'loading': EosIconsLoading,
 	'nav-arrow-up': IconoirNavArrowUp,
 	'password-cursor': IconoirPasswordCursor,
 	'plus-circle-solid': IconoirPlusCircleSolid,
