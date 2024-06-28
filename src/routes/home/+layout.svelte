@@ -13,36 +13,44 @@
 	import { currentUserRoles } from '$lib/modules/user-roles/stores'
 	import { routes } from '$lib/routes'
 	import { ContainerGap, ContainerPadding } from '$lib/types'
+	import { tryit } from 'radash'
 	import { onMount } from 'svelte'
+	import { createAvatar } from '@dicebear/core'
+	import { thumbs } from '@dicebear/collection'
 
 	export let data
 	let toast: JoyToast
+	let avatar: string
 
-	onMount(() => {
-		App.isLoading.set(true)
+	onMount(async () => {
 		$authStore = data.auth
 		$user = data.auth.model as User
 
-		getUserRoles($user)
-			.then((userRole) => {
-				if (userRole.expand?.role_id) {
-					$currentUserRoles = userRole.expand.role_id
-				}
+		avatar = createAvatar(thumbs, {
+			seed: $user.name,
+			size: 200,
+		}).toDataUri()
+
+		App.isLoading.set(true)
+
+		const [err, userRole] = await tryit(getUserRoles)($user)
+
+		App.isLoading.set(false)
+
+		if (err) {
+			return toast.fire({
+				message: 'Failed to retrieve user roles',
+				variant: ToastVariant.ERROR,
 			})
-			.catch(() =>
-				toast.fire({
-					message: 'Failed to retrieve user roles',
-					variant: ToastVariant.ERROR,
-				})
-			)
-			.finally(() => App.isLoading.set(false))
+		}
+
+		if (userRole.expand?.role_id) {
+			$currentUserRoles = userRole.expand.role_id
+		}
 	})
 </script>
 
-<JoyContainer
-	class="w-full h-full overflow-x-auto overflow-y-hidden"
-	gap={ContainerGap.NONE}
->
+<JoyContainer class="w-full h-full overflow-hidden" gap={ContainerGap.NONE}>
 	<JoyToast bind:this={toast} target="shell" />
 	<JoySidebar let:SidebarItem class="border-r">
 		{#each $routes as route (route.path)}
@@ -56,26 +64,39 @@
 			{/if}
 		{/each}
 
-		<JoyContextMenu class="mt-auto hover:bg-secondary/25 hover:text-primary w-full">
-			<SidebarItem
-				type="button"
-				icon="hambuger-menu-line-duotone"
-				let:show
-				on:click={show}
-				slot="context-target"
-			/>
-			<svelte:fragment slot="context-contents">
-				<JoyIconButton
-					variant={ButtonVariant.GHOST}
-					size={ButtonSize.MD}
-					class="w-full justify-start"
-					on:click={signOut}
-					icon="exit-outline"
-				>
-					Sign out
-				</JoyIconButton>
-			</svelte:fragment>
-		</JoyContextMenu>
+		<JoyContainer
+			gap={ContainerGap.NONE}
+			padding={ContainerPadding.NONE}
+			col
+			class="mt-auto w-full"
+		>
+			<JoyTooltip label="Profile" class="hover:bg-secondary/25 hover:text-primary w-full">
+				<SidebarItem type="container" class="max-w-[5rem] max-h-[4rem]">
+					<img class="rounded-full w-full h-full" src={avatar} alt="user-avatar" />
+				</SidebarItem>
+			</JoyTooltip>
+
+			<JoyContextMenu class="hover:bg-secondary/25 hover:text-primary w-full">
+				<SidebarItem
+					type="button"
+					icon="hambuger-menu-line-duotone"
+					let:show
+					on:click={show}
+					slot="context-target"
+				/>
+				<svelte:fragment slot="context-contents">
+					<JoyIconButton
+						variant={ButtonVariant.GHOST}
+						size={ButtonSize.MD}
+						class="w-full justify-start"
+						on:click={signOut}
+						icon="exit-outline"
+					>
+						Sign out
+					</JoyIconButton>
+				</svelte:fragment>
+			</JoyContextMenu>
+		</JoyContainer>
 	</JoySidebar>
 
 	<JoyContainer class="w-full h-full overflow-y-auto" padding={ContainerPadding.NONE}>

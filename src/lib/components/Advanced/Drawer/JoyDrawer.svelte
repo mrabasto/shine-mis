@@ -13,11 +13,11 @@
 		isShown = false
 	}
 
-	$: divClass = `${isShown ? 'flex justify-end' : 'hidden'} ${blocked && 'cursor-progress'} 
-		overflow-hidden absolute inset-0 bg-base-300/50`
-
 	let clazz = ''
 	export { clazz as class }
+
+	$: divClass = `${isShown ? 'flex justify-end' : 'hidden'} ${blocked && 'cursor-progress'} 
+		overflow-hidden absolute inset-0 bg-base-300/50 z-50`
 
 	$: slotContainerClass = `min-h-full w-full bg-base-100 shadow relative ${clazz}`
 </script>

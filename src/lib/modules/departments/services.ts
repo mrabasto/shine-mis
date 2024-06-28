@@ -1,6 +1,5 @@
 import { createService } from '$lib/modules/base/services'
-import type { ListResult } from 'pocketbase'
-import { departments } from './stores'
+import { departments } from '$lib/modules/departments'
 import type { Department } from './types'
 import { tryit } from 'radash'
 

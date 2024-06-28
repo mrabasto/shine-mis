@@ -10,7 +10,6 @@
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextSize } from '$lib/components/Base/Text/types'
 	import CashRequestCreate from '$lib/modules/finance/cash-request/components/CashRequestCreate.svelte'
-	import { getCashRequests } from '$lib/modules/finance/cash-request/services'
 	import { cashRequests } from '$lib/modules/finance/cash-request/stores'
 	import {
 		ApprovalStatus,
@@ -31,7 +30,7 @@
 	let toastVariant: ToastVariant = ToastVariant.INFO
 	let isLoading = false
 	const { loadDepartments } = departmentService()
-	const { loadCashRequests } = cashRequestService()
+	const { loadCashRequests, listCashRequests } = cashRequestService()
 
 	onMount(async () => {
 		const loadDepartmentsError = await loadDepartments()
@@ -64,7 +63,7 @@
 			noTimer: true,
 		})
 
-		getCashRequests()
+		listCashRequests()
 			.then((response) => {
 				toast.hide()
 				$cashRequests = response.items
@@ -136,7 +135,10 @@
 			class="btn-circle relative"
 		>
 			{#key isLoading == true}
-				<div class="inset-0 grid place-items-center" in:spin>
+				<div
+					class="inset-0 grid place-items-center"
+					in:spin={{ duration: 1000, direction: 'right' }}
+				>
 					<JoyIcon icon="refresh-double" />
 				</div>
 			{/key}

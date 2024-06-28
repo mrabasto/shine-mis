@@ -63,7 +63,7 @@
 
 <style lang="postcss">
 	[role='tooltip'] {
-		@apply absolute w-max top-0 left-0;
+		@apply absolute w-max top-0 left-0 z-[100];
 	}
 
 	#arrow {

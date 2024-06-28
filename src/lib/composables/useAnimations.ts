@@ -1,12 +1,23 @@
-import { quintOut } from 'svelte/easing'
+import { cubicOut } from 'svelte/easing'
 
-export const spin = (_node: HTMLElement, { duration = 1000 } = {}) => {
+export interface SpinAnimationOptions {
+	duration: number
+	direction: 'left' | 'right'
+}
+
+export const spin = (_node: HTMLElement, options: SpinAnimationOptions) => {
 	return {
-		duration,
-		easing: quintOut,
+		duration: options.duration,
+		easing: cubicOut,
 		css: (t: number) => {
-			return `transform:
+			if (options.direction == 'right') {
+				return `transform:
 		        rotate(${t * 180}deg)
+		      `
+			}
+
+			return `transform:
+		        rotate(-${t * 180}deg)
 		      `
 		},
 	}

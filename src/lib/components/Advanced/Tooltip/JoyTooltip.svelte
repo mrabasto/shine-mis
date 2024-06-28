@@ -57,7 +57,7 @@
 <style lang="postcss">
 	#tooltip {
 		@apply bg-neutral text-neutral-content px-4 py-2 rounded-lg text-sm font-bold;
-		@apply hidden absolute w-max top-0 left-0;
+		@apply hidden absolute w-max top-0 left-0 z-[100];
 	}
 
 	#arrow {
