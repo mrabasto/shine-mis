@@ -73,7 +73,9 @@
 			<JoyButton
 				plain
 				on:click={toggleSidebar}
-				class="absolute -right-9 top-1/2 -translate-y-1/2 h-[100px] w-8 rounded-lg shadow-xl border bg-white/75 backdrop-blur-sm z-10 grid place-items-center"
+				class="absolute -right-9 top-1/2 -translate-y-1/2 h-[100px] w-8 rounded-r-lg
+				 shadow-xl border bg-white/75 
+				 backdrop-blur-sm z-10 grid place-items-center"
 			>
 				{#key isOpen}
 					<div
