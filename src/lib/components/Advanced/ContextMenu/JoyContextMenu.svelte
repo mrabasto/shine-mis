@@ -13,7 +13,7 @@
 </script>
 
 <JoyFloater class={clazz} placement="top-end">
-	<slot slot="floater-target" let:show name="context-target" {show} />
+	<slot slot="floater-target" let:show name="context-target" showContextMenu={show} />
 	<JoyContainer
 		slot="floater-contents"
 		col

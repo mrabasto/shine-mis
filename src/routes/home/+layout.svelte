@@ -80,8 +80,8 @@
 				<SidebarItem
 					type="button"
 					icon="hambuger-menu-line-duotone"
-					let:show
-					on:click={show}
+					let:showContextMenu
+					on:click={showContextMenu}
 					slot="context-target"
 				/>
 				<svelte:fragment slot="context-contents">

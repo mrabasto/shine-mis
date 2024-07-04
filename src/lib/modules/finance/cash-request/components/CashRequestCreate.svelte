@@ -121,7 +121,7 @@
 			<JoyText weight={FontWeight.BOLD} size={TextSize.LG}>New Request</JoyText>
 		</JoyContainer>
 
-		<JoyTooltip class="ml-auto">
+		<JoyTooltip class="ml-auto" placement="left">
 			<JoyIcon icon="question-mark-circle" />
 
 			<JoyContainer
