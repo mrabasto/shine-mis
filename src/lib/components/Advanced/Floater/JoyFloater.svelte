@@ -10,6 +10,7 @@
 	export { clazz as class }
 	export let floaterClass = ''
 	export let placement: Placement = 'right'
+	export let fitSize = false
 
 	let target: HTMLDivElement, floater: HTMLDivElement, arrowElement: HTMLDivElement
 
@@ -29,12 +30,15 @@
 	}
 
 	const update = () =>
-		floating({
-			target,
-			floater,
-			arrowElement,
-			placement,
-		})
+		floating(
+			{
+				target,
+				floater,
+				arrowElement,
+				placement,
+			},
+			fitSize
+		)
 
 	onMount(async () => {
 		update()
@@ -56,7 +60,7 @@
 		in:fly={{ duration: 100, opacity: 1, y: 10 }}
 		out:fly={{ duration: 100, opacity: 0, y: 10 }}
 	>
-		<slot name="floater-contents"><span>Contents go here</span></slot>
+		<slot name="floater-contents" {hide}><span>Contents go here</span></slot>
 		<div bind:this={arrowElement} id="arrow"></div>
 	</div>
 {/if}

@@ -10,11 +10,13 @@
 	export let noAnimation: boolean = true
 	let clazz = ''
 	export { clazz as class }
-	let btnClass = clazz
+	let btnClass = ''
 
 	$: if (!plain) {
 		btnClass = `btn ${outline && 'btn-outline'} ${variant} ${size} ${clazz} 
 			${noAnimation && 'no-animation'}`
+	} else {
+		btnClass = clazz
 	}
 
 	function nodeType(node: HTMLButtonElement) {

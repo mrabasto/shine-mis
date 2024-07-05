@@ -1,8 +1,11 @@
-import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom'
+import { arrow, computePosition, flip, offset, shift, size } from '@floating-ui/dom'
 import type { FloatingOptions } from '$lib/components/Advanced/Tooltip/types'
 import { sift } from 'radash'
 
-export const floating = async (options: FloatingOptions = { placement: 'right' }) => {
+export const floating = async (
+	options: FloatingOptions = { placement: 'right' },
+	fitSize = false
+) => {
 	const { target, floater, arrowElement, placement } = options
 
 	if (!target || !floater) return
@@ -14,6 +17,16 @@ export const floating = async (options: FloatingOptions = { placement: 'right' }
 			flip(),
 			shift({ padding: 15 }),
 			arrowElement ? arrow({ element: arrowElement }) : null,
+			fitSize
+				? size({
+						apply({ elements }) {
+							const { floating, reference } = elements
+							Object.assign(floating.style, {
+								width: `${(reference as HTMLElement).offsetWidth}px`,
+							})
+						},
+					})
+				: null,
 		]),
 	})
 

@@ -6,8 +6,10 @@ import IconoirUserCircle from '~icons/iconoir/user-circle'
 import IconoirPasswordCursor from '~icons/iconoir/password-cursor'
 import IconoirSparksSolid from '~icons/iconoir/sparks-solid'
 import IconoirXmarkCircle from '~icons/iconoir/xmark-circle'
+import IconoirXmarkCircleSolid from '~icons/iconoir/xmark-circle-solid'
 import IconoirInfoCircle from '~icons/iconoir/info-circle'
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
+import IconoirCheckCircleSolid from '~icons/iconoir/check-circle-solid'
 import IconoirWarningCircle from '~icons/iconoir/warning-circle'
 import IconoirPlusCircleSolid from '~icons/iconoir/plus-circle-solid'
 import IconoirXmark from '~icons/iconoir/xmark'
@@ -21,6 +23,7 @@ import IconoirArrowRight from '~icons/iconoir/arrow-right'
 import IconoirNavArrowLeft from '~icons/iconoir/nav-arrow-left'
 import IconoirNavArrowRight from '~icons/iconoir/nav-arrow-right'
 import IonExitOutline from '~icons/ion/exit-outline'
+import SolarCashOutBold from '~icons/solar/cash-out-bold'
 import SolarHandMoneyLinear from '~icons/solar/hand-money-linear'
 import SolarHamburgerMenuLineDuotone from '~icons/solar/hamburger-menu-line-duotone'
 import EosIconsLoading from '~icons/eos-icons/loading'
@@ -29,6 +32,8 @@ export type UnplugIconName = keyof typeof icons
 export const icons = {
 	'arrow-right': IconoirArrowRight,
 	'check-circle': IconoirCheckCircle,
+	'check-circle-solid': IconoirCheckCircleSolid,
+	'cash-out-bold': SolarCashOutBold,
 	'crown-circle': IconoirCrownCircle,
 	'exit-outline': IonExitOutline,
 	'hand-money-linear': SolarHandMoneyLinear,
@@ -53,4 +58,5 @@ export const icons = {
 	wrench: IconoirWrench,
 	xmark: IconoirXmark,
 	'xmark-circle': IconoirXmarkCircle,
+	'xmark-circle-solid': IconoirXmarkCircleSolid,
 }

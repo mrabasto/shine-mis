@@ -33,6 +33,20 @@ const createCashRequest = (items: CashRequestItem[]) => {
 	return service.create(data)
 }
 
+const updateCashRequest = (id: string, items: CashRequestItem[]) => {
+	const data: Partial<CashRequestDto> = {
+		items,
+		total_amount: items.reduce((total, item) => {
+			total += Number(item.price)
+			return total
+		}, 0),
+	}
+
+	return service.update(id, data, {
+		expand: 'department,requested_by,approved_by',
+	})
+}
+
 const loadCashRequests = async () => {
 	const [err, result] = await tryit(listCashRequests)()
 
@@ -46,4 +60,5 @@ export const cashRequestService = () => ({
 	createCashRequest,
 	listCashRequests,
 	loadCashRequests,
+	updateCashRequest,
 })

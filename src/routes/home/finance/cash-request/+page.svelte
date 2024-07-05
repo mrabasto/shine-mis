@@ -13,6 +13,7 @@
 	import { cashRequests } from '$lib/modules/finance/cash-request/stores'
 	import {
 		ApprovalStatus,
+		type CashRequest,
 		type CashRequestItem,
 	} from '$lib/modules/finance/cash-request/types'
 	import { activeRoute } from '$lib/routes'
@@ -79,6 +80,19 @@
 			.finally(() => (isLoading = false))
 	}
 
+	const updateItem = async (event: CustomEvent<CashRequest>) => {
+		const index = $cashRequests.findIndex((c) => c.id === event.detail.id)
+		if (index === -1) return
+
+		$cashRequests[index] = event.detail
+		$cashRequests = $cashRequests
+
+		toast.fire({
+			message: 'Cash request updated',
+			variant: ToastVariant.SUCCESS,
+		})
+	}
+
 	const errorCashRequest = (event: CustomEvent<string>) => {
 		toast.fire({
 			message: event.detail,
@@ -91,6 +105,16 @@
 			cashRequestDrawer: {
 				isOpen: true,
 				drawerMode: CashRequestDrawerMode.CREATE,
+			},
+		})
+	}
+
+	const editCashRequest = (cashRequest: CashRequest) => {
+		pushState('', {
+			cashRequestDrawer: {
+				isOpen: true,
+				drawerMode: CashRequestDrawerMode.EDIT,
+				cashRequest,
 			},
 		})
 	}
@@ -125,6 +149,7 @@
 
 <CashRequestCreate
 	on:cash-request-create={fetchCashRequests}
+	on:cash-request-edit={updateItem}
 	on:cash-request-error={errorCashRequest}
 />
 
@@ -192,7 +217,10 @@
 			</thead>
 			<tbody>
 				{#each $cashRequests as cashRequest (cashRequest.id)}
-					<tr class="bg-white hover:bg-base-100 cursor-pointer">
+					<tr
+						class="bg-white hover:bg-base-100 cursor-pointer select-none"
+						on:click={() => editCashRequest(cashRequest)}
+					>
 						<td class="px-6 py-4"> {commonFormat(cashRequest.created)}</td>
 						<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
 							{cashRequest.expand?.requested_by.name}

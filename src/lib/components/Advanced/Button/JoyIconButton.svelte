@@ -15,6 +15,7 @@
 	let clazz = ''
 	export { clazz as class }
 	export let iconSize: Size = Size.SM
+	export let iconClass = ''
 
 	let btnClass = clazz
 
@@ -29,7 +30,7 @@
 </script>
 
 <button class={btnClass} on:click use:nodeType {disabled}>
-	<JoyIcon {icon} size={iconSize} />
+	<JoyIcon {icon} size={iconSize} class={iconClass} />
 	<slot />
 	{#if label}
 		{label}
