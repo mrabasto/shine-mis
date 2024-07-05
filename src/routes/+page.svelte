@@ -64,7 +64,7 @@
 
 	<form method="post" use:enhance>
 		<JoyContainer padding={ContainerPadding.MD} col class="bg-transparent relative">
-			<JoyToast bind:this={toast} target="shell" />
+			<JoyToast bind:this={toast} target="shell" id="route+page" />
 
 			<JoyText
 				tag={TextTag.H1}

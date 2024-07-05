@@ -24,12 +24,15 @@
 	import JoyToast from '$lib/components/Advanced/Toast/JoyToast.svelte'
 	import { ToastVariant } from '$lib/components/Advanced/Toast/types'
 	import JoyTooltip from '$lib/components/Advanced/Tooltip/JoyTooltip.svelte'
+	import { CashRequestDrawerMode } from './types'
+	import { writable } from 'svelte/store'
 
 	export let maxLimit = 10
 
 	let items: CashRequestItem[] = [],
 		isLoading = false,
-		toast: JoyToast
+		toast: JoyToast,
+		mode = writable(CashRequestDrawerMode.CREATE)
 
 	const dispatch = createEventDispatcher<CashRequestDispatch>()
 	const { createCashRequest } = cashRequestService()
@@ -86,8 +89,24 @@
 		items.some((i) => i.label.length === 0 || !i.price || i.price === 0)
 
 	$: isInLimit = items.length === maxLimit
-	$: isShown = $page.state.cashRequestCreate
+	$: isShown = $page.state.cashRequestDrawer?.isOpen
+	$: $mode = $page.state.cashRequestDrawer?.drawerMode as CashRequestDrawerMode
+
+	mode.subscribe((m) => {
+		switch (m) {
+			case CashRequestDrawerMode.CREATE:
+				items = []
+				break
+			case CashRequestDrawerMode.EDIT:
+				if ($page.state.cashRequestDrawer?.cashRequest) {
+					items = $page.state.cashRequestDrawer?.cashRequest?.items
+				}
+				break
+		}
+	})
 </script>
+
+<JoyToast bind:this={toast} target="shell" id="cash-request-drawer" />
 
 <JoyDrawer blocked={isLoading} {isShown} {hide}>
 	<section
@@ -98,8 +117,6 @@
 		use:ctrlShiftEnter
 		on:ctrl-shift-enter={submit}
 	/>
-
-	<JoyToast bind:this={toast} target="shell" />
 
 	<JoyItemLoader {isLoading} />
 

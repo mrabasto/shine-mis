@@ -25,6 +25,8 @@
 	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
 	import { departmentService } from '$lib/modules/departments'
 	import { cashRequestService } from '$lib/modules/finance/cash-request'
+	import { CashRequestDrawerMode } from '$lib/modules/finance/cash-request/components/types'
+	import { Finance } from '$lib/routes/types'
 
 	let toast: JoyToast
 	let toastVariant: ToastVariant = ToastVariant.INFO
@@ -85,7 +87,12 @@
 	}
 
 	const newRequest = () => {
-		pushState('', { cashRequestCreate: true })
+		pushState('', {
+			cashRequestDrawer: {
+				isOpen: true,
+				drawerMode: CashRequestDrawerMode.CREATE,
+			},
+		})
 	}
 
 	const approvalBadge = (approvalStatus: ApprovalStatus) => {
@@ -121,7 +128,12 @@
 	on:cash-request-error={errorCashRequest}
 />
 
-<JoyToast bind:this={toast} target="shell" bind:variant={toastVariant} />
+<JoyToast
+	bind:this={toast}
+	target="shell"
+	bind:variant={toastVariant}
+	id={Finance.CASH_REQUESTS}
+/>
 
 <JoyContainer class="w-full" justify={Justify.BETWEEN} alignItems={AlignItems.CENTER}>
 	<JoyContainer alignItems={AlignItems.CENTER}>

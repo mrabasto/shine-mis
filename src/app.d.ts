@@ -1,4 +1,8 @@
 // See https://kit.svelte.dev/docs/types#app
+
+import type { CashRequest } from '$lib/modules/finance/cash-request'
+import type { CashRequestDrawerMode } from '$lib/modules/finance/cash-request/components/types'
+
 // for information about these interfaces
 declare global {
 	namespace App {
@@ -6,7 +10,11 @@ declare global {
 		// interface Locals {}
 		// interface PageData {}
 		interface PageState {
-			cashRequestCreate: boolean
+			cashRequestDrawer?: {
+				isOpen: boolean
+				drawerMode: CashRequestDrawerMode
+				cashRequest?: CashRequest
+			}
 		}
 		// interface Platform {}
 	}
