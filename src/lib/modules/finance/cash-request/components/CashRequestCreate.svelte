@@ -21,7 +21,7 @@
 		type CashRequestDispatch,
 	} from '$lib/modules/finance/cash-request/events'
 	import { createEventDispatcher, tick } from 'svelte'
-	import { slide } from 'svelte/transition'
+	import { scale, slide } from 'svelte/transition'
 	import JoyItemLoader from '$lib/components/Advanced/Loader/JoyItemLoader.svelte'
 	import { ctrlEnter, ctrlShiftEnter, escapePress } from '$lib/composables/useActions'
 	import { page } from '$app/stores'
@@ -30,9 +30,11 @@
 	import JoyTooltip from '$lib/components/Advanced/Tooltip/JoyTooltip.svelte'
 	import { CashRequestDrawerMode } from './types'
 	import { writable } from 'svelte/store'
-	import { Size } from '$lib/components/Base/Icon/types'
+	import { Size, type IconName } from '$lib/components/Base/Icon/types'
 	import JoyContextMenu from '$lib/components/Advanced/ContextMenu/JoyContextMenu.svelte'
 	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
+	import { user } from '$lib/modules/authentication'
+	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 
 	export let maxLimit = 10
 
@@ -78,7 +80,13 @@
 		isLoading = true
 
 		if ($mode === CashRequestDrawerMode.EDIT) {
-			return updateCashRequest($cashRequest?.id, items)
+			let dto: Partial<CashRequest> = {
+				...$cashRequest,
+				items,
+				approved_by: $user.id,
+			}
+
+			return updateCashRequest($cashRequest?.id, dto)
 				.then((response) => {
 					dispatch(CashRequestEvent.EDIT, response)
 
@@ -100,6 +108,17 @@
 			})
 			.catch((response) => dispatch(CashRequestEvent.ERROR, response.message))
 			.finally(() => (isLoading = false))
+	}
+
+	const approvalIcon = (approvalStatus: ApprovalStatus): IconName | UnplugIconName => {
+		switch (approvalStatus) {
+			case ApprovalStatus.PENDING:
+				return 'warning-circle-solid'
+			case ApprovalStatus.APPROVED:
+				return 'check-circle-solid'
+			case ApprovalStatus.DECLINED:
+				return 'xmark-circle-solid'
+		}
 	}
 
 	const approvalIconClass = (approvalStatus: ApprovalStatus) => {
@@ -222,11 +241,15 @@
 			alignItems={AlignItems.CENTER}
 		>
 			<JoyText size={TextSize.LG} class="flex items-center gap-2 shrink-0">
-				<JoyIcon
-					icon="check-circle-solid"
-					class={approvalIconClass($cashRequest.approval_status)}
-					size={Size.LG}
-				/>
+				{#key $cashRequest.approval_status}
+					<div in:scale>
+						<JoyIcon
+							icon={approvalIcon($cashRequest.approval_status)}
+							class={approvalIconClass($cashRequest.approval_status)}
+							size={Size.LG}
+						/>
+					</div>
+				{/key}
 				Status:
 			</JoyText>
 
@@ -235,7 +258,6 @@
 					slot="context-target"
 					let:showContextMenu
 					label={$cashRequest.approval_status}
-					bind:disabled={notValid}
 					plain
 					class={approvalButtonClass($cashRequest.approval_status)}
 					size={ButtonSize.LG}
@@ -269,6 +291,20 @@
 						plain
 					>
 						Decline
+					</JoyIconButton>
+
+					<JoyIconButton
+						size={ButtonSize.MD}
+						class="w-full justify-start flex items-center gap-2 px-4 py-2 hover:bg-warning/10 rounded-lg"
+						icon="warning-circle-solid"
+						iconClass="text-warning"
+						on:click={() => {
+							changeApprovalStatus(ApprovalStatus.PENDING)
+							hideContextMenu()
+						}}
+						plain
+					>
+						Pending
 					</JoyIconButton>
 				</svelte:fragment>
 			</JoyContextMenu>

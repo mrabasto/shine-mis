@@ -33,10 +33,10 @@ const createCashRequest = (items: CashRequestItem[]) => {
 	return service.create(data)
 }
 
-const updateCashRequest = (id: string, items: CashRequestItem[]) => {
-	const data: Partial<CashRequestDto> = {
-		items,
-		total_amount: items.reduce((total, item) => {
+const updateCashRequest = (id: string, cashRequest: Partial<CashRequest>) => {
+	const data: Partial<CashRequest> = {
+		...cashRequest,
+		total_amount: cashRequest.items?.reduce((total, item) => {
 			total += Number(item.price)
 			return total
 		}, 0),

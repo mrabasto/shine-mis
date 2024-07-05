@@ -8,6 +8,8 @@ import IconoirSparksSolid from '~icons/iconoir/sparks-solid'
 import IconoirXmarkCircle from '~icons/iconoir/xmark-circle'
 import IconoirXmarkCircleSolid from '~icons/iconoir/xmark-circle-solid'
 import IconoirInfoCircle from '~icons/iconoir/info-circle'
+import IconoirInfoCircleSolid from '~icons/iconoir/info-circle-solid'
+import IconoirWarningCircleSolid from '~icons/iconoir/warning-circle-solid'
 import IconoirCheckCircle from '~icons/iconoir/check-circle'
 import IconoirCheckCircleSolid from '~icons/iconoir/check-circle-solid'
 import IconoirWarningCircle from '~icons/iconoir/warning-circle'
@@ -38,6 +40,7 @@ export const icons = {
 	'exit-outline': IonExitOutline,
 	'hand-money-linear': SolarHandMoneyLinear,
 	'info-circle': IconoirInfoCircle,
+	'info-circle-solid': IconoirInfoCircleSolid,
 	home: IconoirHome,
 	'hambuger-menu-line-duotone': SolarHamburgerMenuLineDuotone,
 	'money-square': IconoirMoneySquare,
@@ -55,6 +58,7 @@ export const icons = {
 	'trash-solid': IconoirTrashSolid,
 	'user-circle': IconoirUserCircle,
 	'warning-circle': IconoirWarningCircle,
+	'warning-circle-solid': IconoirWarningCircleSolid,
 	wrench: IconoirWrench,
 	xmark: IconoirXmark,
 	'xmark-circle': IconoirXmarkCircle,
