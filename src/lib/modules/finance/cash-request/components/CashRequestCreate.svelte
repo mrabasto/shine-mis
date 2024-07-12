@@ -33,8 +33,9 @@
 	import { Size, type IconName } from '$lib/components/Base/Icon/types'
 	import JoyContextMenu from '$lib/components/Advanced/ContextMenu/JoyContextMenu.svelte'
 	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
-	import { user } from '$lib/modules/authentication'
+	import { user, type User } from '$lib/modules/authentication'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
+	import JoyUserPicker from '$lib/components/Advanced/UserPicker/JoyUserPicker.svelte'
 
 	export let maxLimit = 10
 
@@ -42,9 +43,11 @@
 		isLoading = false,
 		toast: JoyToast,
 		mode = writable(CashRequestDrawerMode.CREATE),
+		isShown = writable(false),
 		cashRequest = writable<CashRequest>(),
 		requestModeLabel: string,
-		submitItemsLabel: string
+		submitItemsLabel: string,
+		isUserPickerShown = false
 
 	const dispatch = createEventDispatcher<CashRequestDispatch>()
 	const { createCashRequest, updateCashRequest } = cashRequestService()
@@ -148,7 +151,14 @@
 		$cashRequest = { ...$cashRequest, approval_status: approvalStatus }
 	}
 
-	export const show = () => (isShown = true)
+	const updateCashRequestedBy = (event: CustomEvent<User>) => {
+		if ($cashRequest.expand?.requested_by) {
+			$cashRequest.requested_by = event.detail.id
+			$cashRequest.expand.requested_by = event.detail
+		}
+	}
+
+	export const show = () => ($isShown = true)
 	export const hide = () => {
 		history.back()
 	}
@@ -158,12 +168,12 @@
 		items.some((i) => i.label.length === 0 || !i.price || i.price === 0)
 
 	$: isInLimit = items.length === maxLimit
-	$: isShown = $page.state.cashRequestDrawer?.isOpen
-	$: $mode = $page.state.cashRequestDrawer?.drawerMode as CashRequestDrawerMode
+	$: $isShown = Boolean($page.state.cashRequestDrawer?.isOpen)
 
-	cashRequest.subscribe(console.log)
+	isShown.subscribe((value) => {
+		if (!value) return
 
-	mode.subscribe((m) => {
+		const m = $page.state.cashRequestDrawer?.drawerMode as CashRequestDrawerMode
 		switch (m) {
 			case CashRequestDrawerMode.CREATE:
 				requestModeLabel = 'New Request'
@@ -174,17 +184,20 @@
 				requestModeLabel = 'Edit Request'
 				submitItemsLabel = 'Save'
 				if ($page.state.cashRequestDrawer?.cashRequest) {
-					$cashRequest = $page.state.cashRequestDrawer?.cashRequest
+					const cr = { ...$page.state.cashRequestDrawer?.cashRequest }
+					$cashRequest = cr
 					items = $cashRequest.items
 				}
 				break
 		}
+
+		$mode = m
 	})
 </script>
 
 <JoyToast bind:this={toast} target="shell" id="cash-request-drawer" />
 
-<JoyDrawer blocked={isLoading} {isShown} {hide}>
+<JoyDrawer blocked={isLoading} isShown={$isShown} {hide}>
 	<section
 		use:ctrlEnter
 		use:escapePress
@@ -192,7 +205,7 @@
 		on:ctrl-enter={addItem}
 		use:ctrlShiftEnter
 		on:ctrl-shift-enter={submit}
-		data-blocked={!isShown}
+		data-blocked={!$isShown}
 	/>
 
 	<JoyItemLoader {isLoading} />
@@ -234,6 +247,33 @@
 	</JoyContainer>
 
 	{#if $mode === CashRequestDrawerMode.EDIT}
+		<JoyUserPicker
+			bind:isShown={isUserPickerShown}
+			selectedUser={$cashRequest.expand?.requested_by}
+			on:user-picker-selected={updateCashRequestedBy}
+		/>
+		<JoyContainer
+			padding={ContainerPadding.NONE}
+			class="w-full px-8 py-0"
+			justify={Justify.BETWEEN}
+			alignItems={AlignItems.CENTER}
+		>
+			<JoyText size={TextSize.LG} class="flex items-center gap-2 shrink-0">
+				<JoyIcon icon="user-circle" size={Size.LG} />
+				Requested By:
+			</JoyText>
+
+			<JoyText size={TextSize.LG} class="flex items-center gap-2 shrink-0">
+				{$cashRequest.expand?.requested_by.name}
+			</JoyText>
+
+			<JoyButton
+				label="Pick User"
+				variant={ButtonVariant.NEUTRAL}
+				on:click={() => (isUserPickerShown = true)}
+			/>
+		</JoyContainer>
+
 		<JoyContainer
 			padding={ContainerPadding.NONE}
 			class="w-full px-8 py-0"

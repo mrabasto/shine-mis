@@ -1,47 +1,55 @@
 <script lang="ts">
-	import { clickOutside, escapePress } from '$lib/composables/useActions'
+	import { clickMe } from '$lib/composables/useActions'
+	import { teleport } from '$lib/components/Advanced/Toast'
+	import { fade, fly } from 'svelte/transition'
+	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
+	import { BorderRounded, ContainerPadding } from '$lib/types'
 
-	export let id = 'custom-modal'
-	let clazz = ''
-	let open = ''
-	export { clazz as class }
-	$: modalClass = `modal ${open}`
-	$: modalBoxClass = `modal-box ${clazz}`
+	export let isShown = false
+	export let blocked = false
+	export let target = 'shell'
 
-	export function openModal() {
-		open = 'modal-open'
+	export let hide: () => void = () => {
+		isShown = false
 	}
 
-	export function closeModal() {
-		if (actionBlocked) return false
+	$: divClass = `${isShown ? 'flex justify-center' : 'hidden'} ${blocked && 'cursor-progress'} 
+		overflow-hidden absolute inset-0 bg-accent/25 z-[55]`
 
-		open = ''
-	}
-
-	export let actionBlocked = false
+	$: slotContainerClass = `min-h-[50%] max-h-[90%] overflow-y-auto w-full bg-base-100 shadow relative`
 </script>
 
-<dialog {id} class={modalClass}>
-	<div
-		class={modalBoxClass}
-		data-blocked={actionBlocked}
-		use:escapePress
-		use:clickOutside
-		on:outside={closeModal}
-		on:escape={closeModal}
-	>
-		<slot name="modal-body">
-			<h3 class="font-bold text-lg">Hello!</h3>
-			<p class="py-4">Press ESC key or click the button below to close</p>
-		</slot>
-		<div class="modal-action">
-			<slot name="modal-action" />
+<template>
+	{#key isShown}
+		<div
+			id="user-picker"
+			class={divClass}
+			use:teleport={target}
+			use:clickMe
+			on:click-me={hide}
+			in:fade={{ duration: 100 }}
+			out:fade={{ duration: 100, delay: 50 }}
+			data-blocked={blocked}
+		>
+			<div
+				class="w-full lg:w-2/3 xl:w-3/5 2xl:w-1/3 overflow-auto"
+				transition:fly={{ duration: 150, y: -20 }}
+			>
+				<div
+					class="h-full flex flex-col justify justify-center"
+					use:clickMe
+					on:click-me={hide}
+				>
+					<JoyContainer
+						class={slotContainerClass}
+						col
+						rounded={BorderRounded.LG}
+						padding={ContainerPadding.MD}
+					>
+						<slot />
+					</JoyContainer>
+				</div>
+			</div>
 		</div>
-	</div>
-</dialog>
-
-<style lang="postcss">
-	dialog {
-		@apply z-[9999];
-	}
-</style>
+	{/key}
+</template>

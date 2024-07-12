@@ -17,6 +17,8 @@
 	import { onMount } from 'svelte'
 	import { createAvatar } from '@dicebear/core'
 	import { thumbs } from '@dicebear/collection'
+	import { userService } from '$lib/modules/users'
+	const { loadUsers } = userService()
 
 	export let data
 	let toast: JoyToast
@@ -46,6 +48,15 @@
 
 		if (userRole.expand?.role_id) {
 			$currentUserRoles = userRole.expand.role_id
+		}
+
+		const loadUserError = await loadUsers()
+
+		if (loadUserError) {
+			toast.fire({
+				message: 'Failed to retrieve users',
+				variant: ToastVariant.ERROR,
+			})
 		}
 	})
 </script>
