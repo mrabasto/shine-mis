@@ -36,6 +36,7 @@
 	import { user, type User } from '$lib/modules/authentication'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 	import JoyUserPicker from '$lib/components/Advanced/UserPicker/JoyUserPicker.svelte'
+	import { selectedCashRequest } from '$lib/modules/finance/cash-request/stores'
 
 	export let maxLimit = 10
 
@@ -170,7 +171,7 @@
 	$: isInLimit = items.length === maxLimit
 	$: $isShown = Boolean($page.state.cashRequestDrawer?.isOpen)
 
-	isShown.subscribe((value) => {
+	isShown.subscribe(async (value) => {
 		if (!value) return
 
 		const m = $page.state.cashRequestDrawer?.drawerMode as CashRequestDrawerMode
@@ -183,11 +184,9 @@
 			case CashRequestDrawerMode.EDIT:
 				requestModeLabel = 'Edit Request'
 				submitItemsLabel = 'Save'
-				if ($page.state.cashRequestDrawer?.cashRequest) {
-					const cr = { ...$page.state.cashRequestDrawer?.cashRequest }
-					$cashRequest = cr
-					items = $cashRequest.items
-				}
+
+				$cashRequest = $selectedCashRequest
+				items = $cashRequest.items
 				break
 		}
 

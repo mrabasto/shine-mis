@@ -13,7 +13,6 @@ declare global {
 			cashRequestDrawer?: {
 				isOpen: boolean
 				drawerMode: CashRequestDrawerMode
-				cashRequest?: CashRequest
 			}
 		}
 		// interface Platform {}

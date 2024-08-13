@@ -10,7 +10,10 @@
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextSize } from '$lib/components/Base/Text/types'
 	import CashRequestCreate from '$lib/modules/finance/cash-request/components/CashRequestCreate.svelte'
-	import { cashRequests } from '$lib/modules/finance/cash-request/stores'
+	import {
+		cashRequests,
+		selectedCashRequest,
+	} from '$lib/modules/finance/cash-request/stores'
 	import {
 		ApprovalStatus,
 		type CashRequest,
@@ -19,7 +22,7 @@
 	import { activeRoute } from '$lib/routes'
 	import { BorderRounded, Justify } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
-	import { onMount } from 'svelte'
+	import { onMount, tick } from 'svelte'
 	import { commonFormat } from '$lib/composables/useDateUtils'
 	import { spin } from '$lib/composables/useAnimations'
 	import { pushState } from '$app/navigation'
@@ -28,6 +31,7 @@
 	import { cashRequestService } from '$lib/modules/finance/cash-request'
 	import { CashRequestDrawerMode } from '$lib/modules/finance/cash-request/components/types'
 	import { Finance } from '$lib/routes/types'
+	import { clone } from 'remeda'
 
 	let toast: JoyToast
 	let toastVariant: ToastVariant = ToastVariant.INFO
@@ -109,13 +113,17 @@
 		})
 	}
 
-	const editCashRequest = (cashRequest: CashRequest) => {
-		pushState('', {
-			cashRequestDrawer: {
-				isOpen: true,
-				drawerMode: CashRequestDrawerMode.EDIT,
-				cashRequest,
-			},
+	const editCashRequest = (cashRequest: CashRequest) => () => {
+		console.log('setting', cashRequest.expand?.requested_by.name, 'as the target')
+		$selectedCashRequest = clone(cashRequest)
+
+		tick().then(() => {
+			pushState('', {
+				cashRequestDrawer: {
+					isOpen: true,
+					drawerMode: CashRequestDrawerMode.EDIT,
+				},
+			})
 		})
 	}
 
@@ -219,7 +227,7 @@
 				{#each $cashRequests as cashRequest (cashRequest.id)}
 					<tr
 						class="bg-white hover:bg-base-100 cursor-pointer select-none"
-						on:click={() => editCashRequest(cashRequest)}
+						on:click={editCashRequest(cashRequest)}
 					>
 						<td class="px-6 py-4"> {commonFormat(cashRequest.created)}</td>
 						<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
