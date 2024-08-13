@@ -27,7 +27,11 @@
 	import { spin } from '$lib/composables/useAnimations'
 	import { pushState } from '$app/navigation'
 	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
-	import { departmentService } from '$lib/modules/departments'
+	import {
+		departmentService,
+		departments,
+		type Department,
+	} from '$lib/modules/departments'
 	import { cashRequestService } from '$lib/modules/finance/cash-request'
 	import { CashRequestDrawerMode } from '$lib/modules/finance/cash-request/components/types'
 	import { Finance } from '$lib/routes/types'
@@ -139,6 +143,12 @@
 		}
 	}
 
+	const departmentName = (department?: Department) => {
+		if (!department) return '---'
+
+		return department.name.split('_').join(' ')
+	}
+
 	const requestedItems = (items: CashRequestItem[]) => {
 		return items
 			.map((item) => {
@@ -213,6 +223,7 @@
 				<tr>
 					<th scope="col" class="px-6 py-3"> Requested At </th>
 					<th scope="col" class="px-6 py-3"> Requested By </th>
+					<th scope="col" class="px-6 py-3"> Department </th>
 					<th scope="col" class="px-6 py-3"> Items </th>
 					<th scope="col" class="px-6 py-3"> Request Status </th>
 					<th scope="col" class="px-6 py-3"> Approval Status </th>
@@ -233,6 +244,9 @@
 						<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
 							{cashRequest.expand?.requested_by.name}
 						</th>
+						<td class="px-6 py-4 capitalize">
+							{departmentName(cashRequest.expand?.department)}
+						</td>
 						<td class="px-6 py-4"> {requestedItems(cashRequest.items)}</td>
 						<td class="px-6 py-4"> {cashRequest.request_status || '---'}</td>
 						<td class="px-6 py-4">

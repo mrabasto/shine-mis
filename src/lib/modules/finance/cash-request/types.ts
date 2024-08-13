@@ -1,4 +1,5 @@
 import type { User } from '$lib/modules/authentication'
+import type { Department } from '$lib/modules/departments'
 import type { RecordModel } from 'pocketbase'
 
 export interface CashRequestItem {
@@ -28,7 +29,7 @@ export enum RequestStatus {
 export interface CashRequest extends RecordModel {
 	approved_by: string
 	approval_status: ApprovalStatus
-	expand?: { requested_by: User; approved_by: User }
+	expand?: { requested_by: User; approved_by: User; department: Department }
 	items: CashRequestItem[]
 	total_amount: number
 	requested_by: string
