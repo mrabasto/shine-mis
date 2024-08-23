@@ -9,9 +9,13 @@ export const createService = <T = RecordModel,>(collection: string) => {
 	const update = (id: string, dto: Partial<T>, options: RecordListOptions = {}) =>
 		pb.collection<T>(collection).update(id, dto, options)
 
+	const first = (filter: string, options: RecordListOptions = {}) =>
+		pb.collection<T>(collection).getFirstListItem(filter, options)
+
 	return {
 		create,
-		update,
+		first,
 		list,
+		update,
 	}
 }

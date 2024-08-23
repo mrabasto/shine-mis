@@ -3,12 +3,14 @@ export * from './finance'
 import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 import type { IconName } from '$lib/components/Base/Icon/types'
 import { writable } from 'svelte/store'
-import { Finance, Home, ShineSchool } from './types'
+import { Attendance, Finance, Home, ShineSchool } from './types'
+import { ATTENDANCE_ROUTE } from './attendance'
+import { FINANCE_ROUTE } from '.'
 
 export const activeRoute = writable<Route>()
 
 export interface Route {
-	path: Home | Finance | ShineSchool
+	path: Attendance | Home | Finance | ShineSchool
 	icon: IconName | UnplugIconName
 	class?: string
 	isActive?: boolean
@@ -28,10 +30,6 @@ export const routes = writable<Route[]>([
 		label: 'Shine School',
 	},
 
-	{
-		path: Finance.INDEX,
-		icon: 'money-square',
-		isShown: true,
-		label: 'Finance',
-	},
+	ATTENDANCE_ROUTE,
+	FINANCE_ROUTE,
 ])

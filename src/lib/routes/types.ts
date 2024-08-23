@@ -3,9 +3,14 @@ export enum App {
 }
 
 export enum Home {
+	ATTENDANCE = '/home/attendance',
 	FINANCE = '/home/finance',
 	INDEX = '/home',
 	SSP = '/home/shine-school',
+}
+
+export enum Attendance {
+	INDEX = `${Home.ATTENDANCE}`,
 }
 
 export enum Finance {

@@ -25,6 +25,8 @@ import IconoirArrowRight from '~icons/iconoir/arrow-right'
 import IconoirNavArrowLeft from '~icons/iconoir/nav-arrow-left'
 import IconoirNavArrowRight from '~icons/iconoir/nav-arrow-right'
 import IonExitOutline from '~icons/ion/exit-outline'
+import IonAlarm from '~icons/ion/alarm'
+import IonTime from '~icons/ion/time'
 import SolarCashOutBold from '~icons/solar/cash-out-bold'
 import SolarHandMoneyLinear from '~icons/solar/hand-money-linear'
 import SolarHamburgerMenuLineDuotone from '~icons/solar/hamburger-menu-line-duotone'
@@ -32,6 +34,7 @@ import EosIconsLoading from '~icons/eos-icons/loading'
 
 export type UnplugIconName = keyof typeof icons
 export const icons = {
+	'alarm': IonAlarm,
 	'arrow-right': IconoirArrowRight,
 	'check-circle': IconoirCheckCircle,
 	'check-circle-solid': IconoirCheckCircleSolid,
@@ -56,6 +59,7 @@ export const icons = {
 	'shopping-bag-plus': IconoirShoppingBagPlus,
 	'sparks-solid': IconoirSparksSolid,
 	'trash-solid': IconoirTrashSolid,
+	time: IonTime,
 	'user-circle': IconoirUserCircle,
 	'warning-circle': IconoirWarningCircle,
 	'warning-circle-solid': IconoirWarningCircleSolid,
