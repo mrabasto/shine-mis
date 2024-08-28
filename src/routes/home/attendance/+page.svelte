@@ -12,9 +12,12 @@
 	import { writable } from 'svelte/store'
 	import { attendanceService } from '$lib/modules/attendance'
 	import { user } from '$lib/modules/authentication'
+	import { ButtonVariant } from '$lib/components/Base/Button'
 
 	const { loadAttendanceLogs, createAttendanceLog, timeOutAttendanceLog } =
 		attendanceService()
+
+	const textColor = TextColor.ACCENT
 
 	const currentTime = writable<DateTime>(DateTime.now())
 	const { clearTimer } = createTimer(1000, () => ($currentTime = DateTime.now()))
@@ -39,24 +42,27 @@
 
 <JoyContainer
 	rounded={BorderRounded.MD}
-	class="bg-primary w-full"
+	class="bg-primary/25 w-full"
 	padding={ContainerPadding.LG}
 	justify={Justify.BETWEEN}
 >
-	<div>
-		<JoyText size={TextSize.XL_2} weight={FontWeight.BOLD} color={TextColor.BASE_100}
-			>Hello, USER_NAME</JoyText
-		>
+	<JoyContainer col gap={ContainerGap.XXS}>
+		<JoyText size={TextSize.XL_2} color={textColor}>Hello, {$user?.name}!</JoyText>
 
-		<JoyText size={TextSize.XL_2} weight={FontWeight.BOLD} color={TextColor.BASE_100}>
+		<JoyText size={TextSize.XL_2} weight={FontWeight.BOLD} color={TextColor.ACCENT}>
 			{$currentTime?.toLocaleString(DateTime.DATE_FULL)}
 		</JoyText>
-		<JoyText size={TextSize.XL_2} weight={FontWeight.BOLD} color={TextColor.BASE_100}>
+		<JoyText size={TextSize.XL_3} weight={FontWeight.NORMAL} color={TextColor.ACCENT}>
 			{$currentTime?.toLocaleString(DateTime.TIME_WITH_SECONDS)}
 		</JoyText>
-	</div>
-	<JoyRow gap={ContainerGap.XXS}>
-		<JoyButton on:click={handleTimeIn}>Time In</JoyButton>
-		<JoyButton on:click={handleTimeOut}>Time Out</JoyButton>
-	</JoyRow>
+	</JoyContainer>
+
+	<JoyContainer col gap={ContainerGap.XXS}>
+		<JoyButton variant={ButtonVariant.PRIMARY} on:click={handleTimeIn} class="w-full"
+			>New Log</JoyButton
+		>
+		<JoyButton on:click={handleTimeOut} class="w-full" disabled
+			>New Leave Request</JoyButton
+		>
+	</JoyContainer>
 </JoyContainer>

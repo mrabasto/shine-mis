@@ -33,7 +33,9 @@ const createAttendanceLog = (
 const timeOutAttendanceLog = async (user: User) => {
 	const date = DateTime.now().toUTC().toFormat('LL-dd')
 
-	const [err, result] = await tryit(service.first)(`time_in ?~ '${date}'`)
+	const [err, result] = await tryit(service.first)(
+		`time_in ?~ '${date}' && time_out = NULL`
+	)
 
 	if (err) return err
 

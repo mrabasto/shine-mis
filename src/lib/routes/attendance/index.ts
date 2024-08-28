@@ -9,11 +9,4 @@ export const ATTENDANCE_ROUTE: Route = {
 	label: 'Attendance',
 }
 
-export const attendanceRoutes = writable<Route[]>([
-	ATTENDANCE_ROUTE,
-	/* {
-		path: Attendance.CASH_REQUESTS,
-		icon: 'hand-money-linear',
-		label: 'Cash Requests',
-	} */
-])
+export const attendanceRoutes = writable<Route[]>([ATTENDANCE_ROUTE])
