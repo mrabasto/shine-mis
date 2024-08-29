@@ -237,7 +237,7 @@
 			<tbody>
 				{#each $cashRequests as cashRequest (cashRequest.id)}
 					<tr
-						class="bg-white hover:bg-base-100 cursor-pointer select-none"
+						class="bg-white group hover:bg-base-100 cursor-pointer select-none"
 						on:click={editCashRequest(cashRequest)}
 					>
 						<td class="px-6 py-4"> {commonFormat(cashRequest.created)}</td>
@@ -260,7 +260,7 @@
 						<td class="px-6 py-4">
 							{cashRequest.total_amount || computedTotal(cashRequest.items)}</td
 						>
-						<td class="text-right sticky right-0">
+						<td class="text-right sticky right-0 bg-white group-hover:bg-base-100">
 							<JoyIconButton
 								icon="arrow-right"
 								plain

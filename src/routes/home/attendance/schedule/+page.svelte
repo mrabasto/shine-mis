@@ -1,21 +1,15 @@
 <script lang="ts">
-	import { writable } from 'svelte/store'
-	import {
-		createSvelteTable,
-		flexRender,
-		getCoreRowModel,
-		getSortedRowModel,
-		type SortDirection,
-		type ColumnDef,
-		type TableOptions,
-	} from '@tanstack/svelte-table'
+	import { type ColumnDef } from '@tanstack/svelte-table'
 	import {
 		attendanceSchedules,
 		type AttendanceSchedule,
 		attendanceScheduleService,
+		selectedAttendanceSchedule,
 	} from '$lib/modules/attendance/schedule'
 	import { onMount } from 'svelte'
 	import { timeFormat } from '$lib/composables/useDateUtils'
+	import JoyDataTable from '$lib/components/Advanced/DataTable/JoyDataTable.svelte'
+	import { clone } from 'remeda'
 
 	const { loadAttendanceSchedules } = attendanceScheduleService()
 
@@ -26,10 +20,6 @@
 			console.log({ loadAttendanceSchedulesError })
 		}
 	})
-
-	const getSortedSymbol = (isSorted: boolean | SortDirection) => {
-		return isSorted ? (isSorted === 'asc' ? '☝️' : '👇️') : ''
-	}
 
 	const columns: ColumnDef<AttendanceSchedule>[] = [
 		{
@@ -56,65 +46,39 @@
 			header: 'Start Time',
 			cell: (info) => timeFormat(info.getValue() as string),
 		},
+
+		{
+			accessorKey: 'end_time',
+			header: 'End Time',
+			cell: (info) => timeFormat(info.getValue() as string),
+		},
+
+		{
+			id: 'actions',
+			cell: (props) => props.row,
+		},
 	]
 
-	const options = writable<TableOptions<AttendanceSchedule>>({
-		columns,
-		data: $attendanceSchedules,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-	})
+	const editSchedule = (event: CustomEvent<AttendanceSchedule>) => {
+		const schedule = event.detail
+		console.log({ schedule })
 
-	attendanceSchedules.subscribe((data) => {
-		options.update((options) => ({
-			...options,
-			data,
-		}))
-	})
+		schedule.name = 'KASJDLKASJDLAKSJDLASJDLKJ'
+		$selectedAttendanceSchedule = clone(schedule)
 
-	const table = createSvelteTable(options)
+		// tick().then(() => {
+		// 	pushState('', {
+		// 		cashRequestDrawer: {
+		// 			isOpen: true,
+		// 			drawerMode: CashRequestDrawerMode.EDIT,
+		// 		},
+		// 	})
+		// })
+	}
 </script>
 
-<div class="relative rounded-lg overflow-x-auto w-full h-full">
-	<table class="w-full text-sm text-left rtl:text-right text-gray-600">
-		<thead class="text-xs text-gray-600 uppercase bg-base-200">
-			{#each $table.getHeaderGroups() as headerGroup}
-				<tr>
-					{#each headerGroup.headers as header}
-						<th colspan={header.colSpan} scope="col" class="px-6 py-3">
-							{#if !header.isPlaceholder}
-								<button
-									disabled={!header.column.getCanSort()}
-									on:click={header.column.getToggleSortingHandler()}
-									class="uppercase"
-								>
-									<svelte:component
-										this={flexRender(header.column.columnDef.header, header.getContext())}
-									/>
-
-									<span>
-										{getSortedSymbol(header.column.getIsSorted())}
-									</span>
-								</button>
-							{/if}
-						</th>
-					{/each}
-				</tr>
-			{/each}
-		</thead>
-
-		<tbody>
-			{#each $table.getRowModel().rows as row}
-				<tr class="bg-white hover:bg-base-100 cursor-pointer select-none">
-					{#each row.getVisibleCells() as cell}
-						<td class="px-6 py-4">
-							<svelte:component
-								this={flexRender(cell.column.columnDef.cell, cell.getContext())}
-							/>
-						</td>
-					{/each}
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-</div>
+<JoyDataTable
+	data={attendanceSchedules}
+	{columns}
+	on:datatable-row-selected={editSchedule}
+/>
