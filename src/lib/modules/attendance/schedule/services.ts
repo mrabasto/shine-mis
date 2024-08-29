@@ -12,8 +12,12 @@ const service_scheduleUser = createService<AttendanceScheduleUser>(
 	collection_scheduleUser
 )
 
-const loadAttendanceSchedules = async () => {
-	const [err, result] = await tryit(service.list)()
+const loadAttendanceSchedules = async (page = 1, limit = 30) => {
+	const options = {
+		expand: 'user_id',
+	}
+
+	const [err, result] = await tryit(service.list)(page, limit, options)
 
 	if (err) return err
 
@@ -21,7 +25,7 @@ const loadAttendanceSchedules = async () => {
 }
 
 const loadAttendanceScheduleUsers = async (user?: User, page = 1, limit = 30) => {
-	let options: RecordListOptions = {}
+	const options: RecordListOptions = {}
 
 	if (user) {
 		options.filter = `user_id = '${user.id}'`

@@ -30,11 +30,12 @@ import IonTime from '~icons/ion/time'
 import SolarCashOutBold from '~icons/solar/cash-out-bold'
 import SolarHandMoneyLinear from '~icons/solar/hand-money-linear'
 import SolarHamburgerMenuLineDuotone from '~icons/solar/hamburger-menu-line-duotone'
+import SolarSortByTimeBold from '~icons/solar/sort-by-time-bold'
 import EosIconsLoading from '~icons/eos-icons/loading'
 
 export type UnplugIconName = keyof typeof icons
 export const icons = {
-	'alarm': IonAlarm,
+	alarm: IonAlarm,
 	'arrow-right': IconoirArrowRight,
 	'check-circle': IconoirCheckCircle,
 	'check-circle-solid': IconoirCheckCircleSolid,
@@ -57,6 +58,7 @@ export const icons = {
 	'refresh-double': IconoirRefreshDouble,
 	settings: IconoirSettings,
 	'shopping-bag-plus': IconoirShoppingBagPlus,
+	'sort-by-time-bold': SolarSortByTimeBold,
 	'sparks-solid': IconoirSparksSolid,
 	'trash-solid': IconoirTrashSolid,
 	time: IonTime,

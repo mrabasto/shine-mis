@@ -9,4 +9,11 @@ export const ATTENDANCE_ROUTE: Route = {
 	label: 'Attendance',
 }
 
-export const attendanceRoutes = writable<Route[]>([ATTENDANCE_ROUTE])
+export const attendanceRoutes = writable<Route[]>([
+	ATTENDANCE_ROUTE,
+	{
+		path: Attendance.SCHEDULES,
+		icon: 'sort-by-time-bold',
+		label: 'Schedules',
+	},
+])

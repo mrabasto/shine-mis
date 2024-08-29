@@ -11,6 +11,7 @@ export enum Home {
 
 export enum Attendance {
 	INDEX = `${Home.ATTENDANCE}`,
+	SCHEDULES = `${Home.ATTENDANCE}/schedule`,
 }
 
 export enum Finance {

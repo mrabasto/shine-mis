@@ -11,6 +11,10 @@ export const commonFormat = (date: string) => {
 	return dateFromISO(date).toFormat(format)
 }
 
+export const timeFormat = (date: string) => {
+	return dateFromISO(date).toLocaleString(DateTime.TIME_SIMPLE)
+}
+
 export const createTimer = (interval: number = 1000, callback: CallableFunction) => {
 	const timer = setInterval(callback, interval)
 

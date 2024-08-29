@@ -19,7 +19,7 @@
 	afterNavigate(() => {
 		const [route] = $financeRoutes.filter((r) => r.path === $page.route.id)
 		$activeRoute = route
-		$financeRoutes = $financeRoutes
+		$financeRoutes = [...$financeRoutes]
 	})
 
 	const setActive = async (route: Route) => {
@@ -95,6 +95,7 @@
 						icon={route.icon}
 						class={activeClass(route).sidebarItemClass}
 						on:click={() => setActive(route)}
+						href={route.path}
 					>
 						<JoyText slot="label" class={activeClass(route).itemLabelClass}
 							>{route.label}
