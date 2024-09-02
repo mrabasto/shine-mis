@@ -6,10 +6,12 @@
 		attendanceScheduleService,
 		selectedAttendanceSchedule,
 	} from '$lib/modules/attendance/schedule'
-	import { onMount } from 'svelte'
+	import { onMount, tick } from 'svelte'
 	import { timeFormat } from '$lib/composables/useDateUtils'
 	import JoyDataTable from '$lib/components/Advanced/DataTable/JoyDataTable.svelte'
 	import { clone } from 'remeda'
+	import ScheduleCreateDrawer from '$lib/modules/attendance/components/ScheduleCreateDrawer.svelte'
+	import { pushState } from '$app/navigation'
 
 	const { loadAttendanceSchedules } = attendanceScheduleService()
 
@@ -66,16 +68,17 @@
 		schedule.name = 'KASJDLKASJDLAKSJDLASJDLKJ'
 		$selectedAttendanceSchedule = clone(schedule)
 
-		// tick().then(() => {
-		// 	pushState('', {
-		// 		cashRequestDrawer: {
-		// 			isOpen: true,
-		// 			drawerMode: CashRequestDrawerMode.EDIT,
-		// 		},
-		// 	})
-		// })
+		tick().then(() => {
+			pushState('', {
+				scheduleCreateDrawer: {
+					isOpen: true,
+				},
+			})
+		})
 	}
 </script>
+
+<ScheduleCreateDrawer />
 
 <JoyDataTable
 	data={attendanceSchedules}

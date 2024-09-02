@@ -1,7 +1,6 @@
 <script lang="ts">
 	import JoyButton from '$lib/components/Base/Button/JoyButton.svelte'
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
-	import JoyRow from '$lib/components/Base/Row/JoyRow.svelte'
 	import JoyText from '$lib/components/Base/Text/JoyText.svelte'
 	import { FontWeight, TextColor, TextSize } from '$lib/components/Base/Text/types'
 	import { createTimer } from '$lib/composables/useDateUtils'
