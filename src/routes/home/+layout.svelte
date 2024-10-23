@@ -70,7 +70,7 @@
 					label={route.label}
 					class="hover:bg-secondary/25 hover:text-primary w-full"
 				>
-					<SidebarItem icon={route.icon} href={route.path} />
+					<SidebarItem icon={route.icon} href={route.path} class="p-4" />
 				</JoyTooltip>
 			{/if}
 		{/each}
@@ -82,18 +82,22 @@
 			class="mt-auto w-full"
 		>
 			<JoyTooltip label="Profile" class="hover:bg-secondary/25 hover:text-primary w-full">
-				<SidebarItem type="container" class="max-w-[5rem] max-h-[4rem]">
+				<SidebarItem type="container" class="max-w-[5rem] max-h-[4rem] p-4">
 					<img class="rounded-full w-full h-full" src={avatar} alt="user-avatar" />
 				</SidebarItem>
 			</JoyTooltip>
 
-			<JoyContextMenu class="hover:bg-secondary/25 hover:text-primary w-full">
+			<JoyContextMenu
+				class="hover:bg-secondary/25 hover:text-primary w-full"
+				contentsClass="bg-white"
+			>
 				<SidebarItem
 					type="button"
 					icon="hambuger-menu-line-duotone"
 					let:showContextMenu
 					on:click={showContextMenu}
 					slot="context-target"
+					class="p-4"
 				/>
 				<svelte:fragment slot="context-contents">
 					<JoyIconButton

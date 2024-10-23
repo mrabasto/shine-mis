@@ -18,6 +18,7 @@
 	export let justify: Justify = Justify.START
 	export let alignItems: AlignItems = AlignItems.START
 	export let col = false
+	// eslint-disable-next-line no-undef
 	export let tag: keyof HTMLElementTagNameMap = 'div'
 
 	export { clazz as class }
@@ -28,7 +29,7 @@
 			divClass += 'flex-col'
 		}
 
-		divClass = `${divClass} ${justify} ${alignItems} ${padding} ${gap} 
+		divClass = `${divClass} ${justify} ${alignItems} ${padding} ${gap}
 			${border} ${borderColor} ${rounded} ${shadow} ${clazz}`
 	}
 </script>

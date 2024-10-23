@@ -2,8 +2,8 @@
 	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button/types'
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
-	import { Size, type IconName } from '$lib/components/Base/Icon/types'
-	export let icon: IconName | UnplugIconName = 'crown-circle'
+	import { Size } from '$lib/components/Base/Icon/types'
+	export let icon: UnplugIconName = 'crown-circle'
 	export let label: string | undefined = undefined
 	export let size: ButtonSize = ButtonSize.SM
 	export let variant: ButtonVariant = ButtonVariant.NEUTRAL
@@ -20,7 +20,7 @@
 	let btnClass = clazz
 
 	$: if (!plain) {
-		btnClass = `btn ${outline && 'btn-outline'} ${variant} ${size} ${clazz} 
+		btnClass = `btn ${outline && 'btn-outline'} ${variant} ${size} ${clazz}
 			${noAnimation && 'no-animation'} gap-2 items-center`
 	}
 

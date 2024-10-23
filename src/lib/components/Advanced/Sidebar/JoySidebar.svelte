@@ -1,7 +1,6 @@
 <script lang="ts">
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
 	import { ContainerGap, ContainerPadding } from '$lib/types'
-	import { AlignItems } from '$lib/types/AlignItems'
 	import SidebarItem from './JoySidebarItem.svelte'
 	let clazz = ''
 	export { clazz as class }
@@ -12,7 +11,6 @@
 <JoyContainer
 	tag="aside"
 	class={sidebarClass}
-	alignItems={AlignItems.CENTER}
 	gap={ContainerGap.NONE}
 	padding={ContainerPadding.NONE}
 	col

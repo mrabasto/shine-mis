@@ -1,19 +1,19 @@
 <script lang="ts">
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
-	import { Size, type IconName } from '$lib/components/Base/Icon/types'
-	import type { Route } from '$lib/routes'
+	import { Size } from '$lib/components/Base/Icon/types'
 
-	export let icon: IconName | UnplugIconName = 'crown-circle'
+	export let icon: UnplugIconName = 'crown-circle'
 
 	let clazz = ''
 	export { clazz as class }
 	export let href: string = '#'
 	export let type: 'a' | 'container' | 'button' = 'a'
+	export let active = false
 
-	$: itemClass = `w-full p-4 gap-2
+	$: itemClass = `w-full gap-4
 		transition-colors flex items-center ${!$$slots['label'] && 'justify-center'}
-		overflow-hidden group ${clazz}`
+		overflow-hidden group ${active && 'bg-accent/25 text-primary'} ${clazz}`
 </script>
 
 {#if type === 'a'}

@@ -1,17 +1,16 @@
 <script lang="ts">
 	import type { UnplugIconName } from './Unplug'
-	import { Size, Stroke, Fill, type IconName } from './types'
+	import { Size, Stroke, Fill } from './types'
 
 	let clazz = ''
 	export { clazz as class }
 	export let fill: Fill = Fill.NONE
 	export let stroke: Stroke = Stroke.TRANSPARENT
 	export let size: Size = Size.MD
-	export let icon: IconName | UnplugIconName = 'crown-circle'
-	import { icons } from './types'
+	export let icon: UnplugIconName = 'crown-circle'
 	import { icons as unplugIcons } from './Unplug'
 
-	const iconSet = { ...icons, ...unplugIcons }
+	const iconSet = { ...unplugIcons }
 
 	$: iconClass = `${clazz} ${fill} ${stroke} ${size}`
 </script>

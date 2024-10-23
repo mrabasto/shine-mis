@@ -13,7 +13,7 @@
 	let btnClass = ''
 
 	$: if (!plain) {
-		btnClass = `btn ${outline && 'btn-outline'} ${variant} ${size} ${clazz} 
+		btnClass = `btn outline-none ${outline && 'btn-outline'} ${variant} ${size} ${clazz}
 			${noAnimation && 'no-animation'}`
 	} else {
 		btnClass = clazz

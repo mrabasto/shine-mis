@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button/types'
 	import type { HTMLAnchorAttributes } from 'svelte/elements'
-	interface Attributes extends HTMLAnchorAttributes {}
-	export let attributes: Attributes | undefined = undefined
+	export let attributes: HTMLAnchorAttributes | undefined = undefined
 
 	export let label: string | undefined = undefined
 	export let size: ButtonSize | undefined = undefined

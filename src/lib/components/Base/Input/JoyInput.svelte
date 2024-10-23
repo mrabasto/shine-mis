@@ -4,8 +4,7 @@
 	import { InputSize, InputVariant } from './types'
 	import type { HTMLInputAttributes } from 'svelte/elements'
 
-	interface Attributes extends HTMLInputAttributes {}
-	export let attributes: Attributes | undefined = undefined
+	export let attributes: HTMLInputAttributes | undefined = undefined
 
 	export let placeholder: string = 'Type here'
 	export let size: InputSize = InputSize.MD
@@ -28,7 +27,7 @@
 			buildClass += ' input-bordered border-2'
 		}
 
-		inputClass = `input focus-within:outline-none focus-within:border-accent
+		inputClass = `input focus-within:outline-none focus-within:border-primary focus-within:border-2 transition-colors duration-200
 			${variant} ${size} ${rounded} ${buildClass} ${clazz}`
 	}
 

@@ -13,6 +13,7 @@ export enum ButtonVariant {
 	INFO = `btn-info`,
 	LINK = 'btn-link',
 	NEUTRAL = `btn-neutral`,
+	OUTLINE = `btn-outline`,
 	PRIMARY = `btn-primary`,
 	SECONDARY = `btn-secondary`,
 	SUCCESS = `btn-success`,

@@ -51,7 +51,7 @@ export const floating = async (
 		top: arrowY != null ? `${arrowY}px` : '',
 		right: '',
 		bottom: '',
-		[staticSide]: '-4px',
+		[staticSide as string]: '-4px',
 	}
 
 	Object.assign(arrowElement.style, { ...style })

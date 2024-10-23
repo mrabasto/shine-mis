@@ -11,7 +11,7 @@ export const activeRoute = writable<Route>()
 
 export interface Route {
 	path: Attendance | Home | Finance | ShineSchool
-	icon: IconName | UnplugIconName
+	icon: UnplugIconName
 	class?: string
 	isActive?: boolean
 	isShown?: boolean

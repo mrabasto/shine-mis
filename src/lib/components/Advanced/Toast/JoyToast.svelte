@@ -53,12 +53,12 @@
 
 	export let target: string
 
-	$: divClass = `${isShown ? 'block' : 'hidden'} toast toast-top 
+	$: divClass = `${isShown ? 'block' : 'hidden'} toast toast-top
         toast-center no-animation z-50 cursor-pointer`
 
 	const toast = 'alert rounded-lg bg-white shadow border-2'
 	let iconClass = ''
-	let icon: IconName | UnplugIconName
+	let icon: UnplugIconName
 
 	$: switch (variant) {
 		case ToastVariant.ERROR:
