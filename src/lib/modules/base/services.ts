@@ -1,7 +1,7 @@
 import type { RecordListOptions, RecordModel } from 'pocketbase'
 import { pb } from '$lib/modules/authentication/'
 
-export const createService = <T = RecordModel,>(collection: string) => {
+export const createService = <T = RecordModel>(collection: string) => {
 	const list = (page: number = 1, limit = 30, options: RecordListOptions = {}) =>
 		pb.collection<T>(collection).getList(page, limit, options)
 

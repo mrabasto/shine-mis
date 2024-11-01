@@ -3,27 +3,46 @@
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
 	import { BorderRounded, ContainerGap, ContainerPadding, Shadow } from '$lib/types'
 	import { type Placement } from '@floating-ui/dom'
-	let clazz = ''
-	export { clazz as class }
-	export let placement: Placement = 'top-end'
-	export let fitSize = false
-	export let contentsClass = ''
+	import type { Snippet } from 'svelte'
 
-	$: contextContentsClass = `p-2 min-w-[200px] max-w-full ${contentsClass}`
+	interface Props {
+		class?: string
+		placement?: Placement
+		fitSize?: boolean
+		contentsClass?: string
+		contextTarget: Snippet<[() => Promise<void>]>
+		contextContents: Snippet<[() => Promise<void>]>
+	}
+
+	let {
+		class: clazz = '',
+		placement = 'top-end',
+		fitSize = false,
+		contentsClass = '',
+		contextTarget,
+		contextContents,
+	}: Props = $props()
+
+	let contextContentsClass = $derived(`p-2 min-w-[200px] max-w-full ${contentsClass}`)
 </script>
 
 <JoyFloater class={clazz} {placement} {fitSize}>
-	<slot slot="floater-target" let:show name="context-target" showContextMenu={show} />
-	<JoyContainer
-		slot="floater-contents"
-		let:hide
-		col
-		gap={ContainerGap.XXS}
-		rounded={BorderRounded.LG}
-		padding={ContainerPadding.NONE}
-		class={contextContentsClass}
-		shadow={Shadow.XL}
-	>
-		<slot name="context-contents" hideContextMenu={hide} />
-	</JoyContainer>
+	{#snippet floaterTarget(show)}
+		{@const showContextMenu = show}
+		{@render contextTarget(showContextMenu)}
+	{/snippet}
+
+	{#snippet floaterContents(hide)}
+		<JoyContainer
+			col
+			gap={ContainerGap.XXS}
+			rounded={BorderRounded.LG}
+			padding={ContainerPadding.NONE}
+			class={contextContentsClass}
+			shadow={Shadow.XL}
+		>
+			{@const hideContextMenu = hide}
+			{@render contextContents(hideContextMenu)}
+		</JoyContainer>
+	{/snippet}
 </JoyFloater>

@@ -1,15 +1,19 @@
 <script lang="ts">
-	let clazz = ''
-	export { clazz as class }
-	export let graphic: keyof typeof graphics = 'notFound'
-
 	import JoyGraphic404 from '$lib/components/Base/Graphic/Variants/JoyGraphic404.svelte'
+	interface Props {
+		class?: string
+		graphic?: keyof typeof graphics
+	}
+
+	let { class: clazz = '', graphic = 'notFound' }: Props = $props()
 
 	const graphics = {
 		notFound: JoyGraphic404,
 	}
 
-	$: iconClass = `${clazz}`
+	let iconClass = $derived(`${clazz}`)
+
+	const SvelteComponent = $derived(graphics[graphic])
 </script>
 
-<svelte:component this={graphics[graphic]} class={iconClass} />
+<SvelteComponent class={iconClass} />

@@ -12,7 +12,7 @@ declare global {
 			cashRequestDrawer?: {
 				isOpen: boolean
 				drawerMode: CashRequestDrawerMode
-			},
+			}
 			scheduleCreateDrawer?: {
 				isOpen: boolean
 			}

@@ -3,15 +3,20 @@
 	import { type User } from '$lib/modules/authentication/types'
 	import { initials } from '@dicebear/collection'
 	import { createAvatar } from '@dicebear/core'
-	let clazz = ''
-	export { clazz as class }
 
-	export let user: User
-	$: avatarClass = `max-w-[2.5rem] max-h-[2.5rem] ${clazz}`
-	$: src = createAvatar(initials, {
-		seed: user.username,
-		size: 200,
-	}).toDataUri()
+	interface Props {
+		class?: string
+		user: User
+	}
+
+	let { class: clazz = '', user }: Props = $props()
+	let avatarClass = $derived(`max-w-[2.5rem] max-h-[2.5rem] ${clazz}`)
+	let src = $derived(
+		createAvatar(initials, {
+			seed: user.username,
+			size: 200,
+		}).toDataUri()
+	)
 </script>
 
 <JoyRow class={avatarClass}>

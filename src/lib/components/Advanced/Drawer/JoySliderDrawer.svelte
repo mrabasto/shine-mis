@@ -14,14 +14,29 @@
 	import { ContainerPadding } from '$lib/types'
 	import { AlignItems } from '$lib/types/AlignItems'
 
-	let toast: JoyToast
+	let toast = $state<ReturnType<typeof JoyToast>>()
 
-	export let id = 'drawer'
-	export let isLoading = false
-	export let isShown = writable(false)
-	export let moduleLabel = 'module'
-	export let modeLabel = 'mode'
-	export let target = 'shell'
+	interface Props {
+		id?: string
+		isLoading?: boolean
+		isShown?: any
+		moduleLabel?: string
+		modeLabel?: string
+		target?: string
+		tooltip?: import('svelte').Snippet
+		children?: import('svelte').Snippet<[any]>
+	}
+
+	let {
+		id = 'drawer',
+		isLoading = false,
+		isShown = writable(false),
+		moduleLabel = 'module',
+		modeLabel = 'mode',
+		target = 'shell',
+		tooltip,
+		children,
+	}: Props = $props()
 
 	const hide = () => {
 		history.back()
@@ -31,7 +46,7 @@
 <JoyToast bind:this={toast} {target} {id} />
 
 <JoyDrawer blocked={isLoading} isShown={$isShown} {hide}>
-	<section use:escapePress on:escape={hide} data-blocked={!$isShown} />
+	<section use:escapePress onescape={hide} data-blocked={!$isShown}></section>
 	<JoyItemLoader {isLoading} />
 
 	<JoyContainer
@@ -57,16 +72,13 @@
 		<JoyTooltip class="ml-auto" placement="left">
 			<JoyIcon icon="question-mark-circle" />
 
-			<JoyContainer
-				slot="tooltip-content"
-				class="w-full"
-				padding={ContainerPadding.XXS}
-				col
-			>
-				<span>(Esc) Close</span>
-				<slot name="tooltip" />
-			</JoyContainer>
+			{#snippet tooltipContent()}
+				<JoyContainer class="w-full" padding={ContainerPadding.XXS} col>
+					<span>(Esc) Close</span>
+					{@render tooltip?.()}
+				</JoyContainer>
+			{/snippet}
 		</JoyTooltip>
 	</JoyContainer>
-	<slot {hide}/>
+	{@render children?.({ hide })}
 </JoyDrawer>

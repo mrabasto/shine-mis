@@ -3,35 +3,55 @@
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 	import { Size } from '$lib/components/Base/Icon/types'
-	export let icon: UnplugIconName = 'crown-circle'
-	export let label: string | undefined = undefined
-	export let size: ButtonSize = ButtonSize.SM
-	export let variant: ButtonVariant = ButtonVariant.NEUTRAL
-	export let plain: boolean = false
-	export let outline: boolean = false
-	export let type: 'submit' | 'reset' | 'button' = 'button'
-	export let disabled: boolean = false
-	export let noAnimation: boolean = true
-	let clazz = ''
-	export { clazz as class }
-	export let iconSize: Size = Size.SM
-	export let iconClass = ''
 
-	let btnClass = clazz
-
-	$: if (!plain) {
-		btnClass = `btn ${outline && 'btn-outline'} ${variant} ${size} ${clazz}
-			${noAnimation && 'no-animation'} gap-2 items-center`
+	interface Props {
+		icon?: UnplugIconName
+		label?: string | undefined
+		size?: ButtonSize
+		variant?: ButtonVariant
+		plain?: boolean
+		outline?: boolean
+		type?: 'submit' | 'reset' | 'button'
+		disabled?: boolean
+		noAnimation?: boolean
+		class?: string
+		iconSize?: Size
+		iconClass?: string
+		children?: import('svelte').Snippet
+		onclick?: (event: MouseEvent) => void
 	}
+
+	let {
+		icon = 'crown-circle',
+		label = undefined,
+		size = ButtonSize.SM,
+		variant = ButtonVariant.NEUTRAL,
+		plain = false,
+		outline = false,
+		type = 'button',
+		disabled = false,
+		noAnimation = true,
+		class: clazz = '',
+		iconSize = Size.SM,
+		iconClass = '',
+		children,
+		onclick,
+	}: Props = $props()
+
+	let btnClass = $derived(
+		!plain &&
+			`btn ${outline && 'btn-outline'} ${variant} ${size} ${clazz}
+				${noAnimation && 'no-animation'} gap-2 items-center`
+	)
 
 	function nodeType(node: HTMLButtonElement) {
 		node.type = type
 	}
 </script>
 
-<button class={btnClass} on:click use:nodeType {disabled}>
+<button class={String(btnClass)} {onclick} use:nodeType {disabled}>
 	<JoyIcon {icon} size={iconSize} class={iconClass} />
-	<slot />
+	{@render children?.()}
 	{#if label}
 		{label}
 	{/if}

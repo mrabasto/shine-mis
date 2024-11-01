@@ -5,18 +5,31 @@
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
 	import { BorderRounded, ContainerPadding } from '$lib/types'
 
-	export let isShown = false
-	export let blocked = false
-	export let target = 'shell'
-
-	export let hide: () => void = () => {
-		isShown = false
+	interface Props {
+		isShown?: boolean
+		blocked?: boolean
+		target?: string
+		hide?: () => void
+		children?: import('svelte').Snippet
 	}
 
-	$: divClass = `${isShown ? 'flex justify-center' : 'hidden'} ${blocked && 'cursor-progress'} 
-		overflow-hidden absolute inset-0 bg-accent/25 z-[55]`
+	let {
+		isShown = $bindable(false),
+		blocked = false,
+		target = 'shell',
+		hide = () => {
+			isShown = false
+		},
+		children,
+	}: Props = $props()
 
-	$: slotContainerClass = `min-h-[50%] max-h-[90%] overflow-y-auto w-full bg-base-100 shadow relative`
+	let divClass =
+		$derived(`${isShown ? 'flex justify-center' : 'hidden'} ${blocked && 'cursor-progress'} 
+		overflow-hidden absolute inset-0 bg-accent/25 z-[55]`)
+
+	let slotContainerClass = $derived(
+		`min-h-[50%] max-h-[90%] overflow-y-auto w-full bg-base-100 shadow relative`
+	)
 </script>
 
 <template>
@@ -26,7 +39,7 @@
 			class={divClass}
 			use:teleport={target}
 			use:clickMe
-			on:click-me={hide}
+			onclick-me={hide}
 			in:fade={{ duration: 100 }}
 			out:fade={{ duration: 100, delay: 50 }}
 			data-blocked={blocked}
@@ -38,7 +51,7 @@
 				<div
 					class="h-full flex flex-col justify justify-center"
 					use:clickMe
-					on:click-me={hide}
+					onclick-me={hide}
 				>
 					<JoyContainer
 						class={slotContainerClass}
@@ -46,7 +59,7 @@
 						rounded={BorderRounded.LG}
 						padding={ContainerPadding.MD}
 					>
-						<slot />
+						{@render children?.()}
 					</JoyContainer>
 				</div>
 			</div>

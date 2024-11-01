@@ -1,10 +1,19 @@
 <script lang="ts">
-	let clazz = ''
-	export { clazz as class }
+	interface Props {
+		class?: string
+	}
+
+	let { class: clazz = '' }: Props = $props()
 </script>
 
 <svg class={clazz} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"
-	><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"
+	><radialGradient
+		id="a12"
+		cx=".66"
+		fx=".66"
+		cy=".3125"
+		fy=".3125"
+		gradientTransform="scale(1.5)"
 		><stop offset="0" stop-color="#FFA408"></stop><stop
 			offset=".3"
 			stop-color="#FFA408"

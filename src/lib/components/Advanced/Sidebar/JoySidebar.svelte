@@ -2,10 +2,14 @@
 	import JoyContainer from '$lib/components/Base/Container/JoyContainer.svelte'
 	import { ContainerGap, ContainerPadding } from '$lib/types'
 	import SidebarItem from './JoySidebarItem.svelte'
-	let clazz = ''
-	export { clazz as class }
+	interface Props {
+		class?: string
+		children?: import('svelte').Snippet<[any]>
+	}
 
-	$: sidebarClass = `min-w-[80px] h-full ${clazz} bg-white shrink-0`
+	let { class: clazz = '', children }: Props = $props()
+
+	let sidebarClass = $derived(`min-w-[80px] h-full ${clazz} bg-white shrink-0`)
 </script>
 
 <JoyContainer
@@ -15,5 +19,5 @@
 	padding={ContainerPadding.NONE}
 	col
 >
-	<slot {SidebarItem} />
+	{@render children?.({ SidebarItem })}
 </JoyContainer>

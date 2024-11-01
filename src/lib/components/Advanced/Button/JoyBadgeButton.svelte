@@ -1,32 +1,52 @@
 <script lang="ts">
+	import { run, createBubbler } from 'svelte/legacy'
+
+	const bubble = createBubbler()
 	import { BadgeButtonSize, BadgeButtonVariant } from './types'
 
-	export let label: string | undefined = undefined
-	export let size: BadgeButtonSize = BadgeButtonSize.MD
-	export let variant: BadgeButtonVariant = BadgeButtonVariant.NEUTRAL
-	export let plain: boolean = false
-	export let outline: boolean = false
-	export let type: 'submit' | 'reset' | 'button' = 'button'
-	export let disabled: boolean = false
-	let clazz = ''
-	export { clazz as class }
+	interface Props {
+		label?: string | undefined
+		size?: BadgeButtonSize
+		variant?: BadgeButtonVariant
+		plain?: boolean
+		outline?: boolean
+		type?: 'submit' | 'reset' | 'button'
+		disabled?: boolean
+		class?: string
+		children?: import('svelte').Snippet
+	}
 
-	$: btnClass = `${!plain && 'badge'} ${outline && 'badge-outline'} ${variant} ${size} ${clazz}`
-	$: {
+	let {
+		label = undefined,
+		size = BadgeButtonSize.MD,
+		variant = BadgeButtonVariant.NEUTRAL,
+		plain = false,
+		outline = false,
+		type = 'button',
+		disabled = false,
+		class: clazz = '',
+		children,
+	}: Props = $props()
+
+	let btnClass
+	run(() => {
+		btnClass = `${!plain && 'badge'} ${outline && 'badge-outline'} ${variant} ${size} ${clazz}`
+	})
+	run(() => {
 		switch (variant) {
 			case BadgeButtonVariant.GHOST:
 				btnClass = `${btnClass} hover:bg-blue-50`
 				break
 		}
-	}
+	})
 
 	function nodeType(node: HTMLButtonElement) {
 		node.type = type
 	}
 </script>
 
-<button class={btnClass} on:click use:nodeType {disabled}>
-	<slot />
+<button class={btnClass} onclick={bubble('click')} use:nodeType {disabled}>
+	{@render children?.()}
 	{#if label}
 		{label}
 	{/if}

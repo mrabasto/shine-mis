@@ -37,9 +37,9 @@
 	import { Finance } from '$lib/routes/types'
 	import { clone } from 'remeda'
 
-	let toast: JoyToast
-	let toastVariant: ToastVariant = ToastVariant.INFO
-	let isLoading = false
+	let toast: JoyToast = $state()
+	let toastVariant: ToastVariant = $state(ToastVariant.INFO)
+	let isLoading = $state(false)
 	const { loadDepartments } = departmentService()
 	const { loadCashRequests, listCashRequests } = cashRequestService()
 
@@ -186,7 +186,7 @@
 
 		<JoyButton
 			variant={ButtonVariant.GHOST}
-			on:click={fetchCashRequests}
+			onclick={fetchCashRequests}
 			class="btn-circle relative"
 		>
 			{#key isLoading == true}
@@ -201,7 +201,7 @@
 	</JoyContainer>
 
 	<JoyContainer alignItems={AlignItems.CENTER}>
-		<JoyButton variant={ButtonVariant.PRIMARY} size={ButtonSize.SM} on:click={newRequest}>
+		<JoyButton variant={ButtonVariant.PRIMARY} size={ButtonSize.SM} onclick={newRequest}>
 			<JoyIcon icon="plus-circle-solid" stroke={Stroke.TRANSPARENT} />
 			New Request
 		</JoyButton>
@@ -238,7 +238,7 @@
 				{#each $cashRequests as cashRequest (cashRequest.id)}
 					<tr
 						class="bg-white group hover:bg-base-100 cursor-pointer select-none"
-						on:click={editCashRequest(cashRequest)}
+						onclick={editCashRequest(cashRequest)}
 					>
 						<td class="px-6 py-4"> {commonFormat(cashRequest.created)}</td>
 						<th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">

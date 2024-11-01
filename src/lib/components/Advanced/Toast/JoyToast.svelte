@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { run, createBubbler } from 'svelte/legacy'
+
+	const bubble = createBubbler()
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import { fly } from 'svelte/transition'
 	import { teleport } from './actions'
@@ -8,14 +11,10 @@
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 	import { clickMe } from '$lib/composables/useActions'
 
-	let isShown = false,
-		message: string | undefined,
-		sleeping = false,
+	let isShown = $state(false),
+		message: string | undefined = $state(),
+		sleeping = $state(false),
 		noTimer = false
-
-	export let sleepInSeconds: number = 3
-	export let variant: ToastVariant = ToastVariant.ERROR
-	export let id = 'toast'
 
 	export const fire = (
 		toastOptions: ToastOptions = {
@@ -51,36 +50,50 @@
 	export const setNoTimer = (timer = false) => (noTimer = timer)
 	export const setVariant = (newVariant: ToastVariant) => (variant = newVariant)
 
-	export let target: string
-
-	$: divClass = `${isShown ? 'block' : 'hidden'} toast toast-top
-        toast-center no-animation z-50 cursor-pointer`
-
-	const toast = 'alert rounded-lg bg-white shadow border-2'
-	let iconClass = ''
-	let icon: UnplugIconName
-
-	$: switch (variant) {
-		case ToastVariant.ERROR:
-			iconClass = 'text-error'
-			icon = 'xmark-circle'
-			break
-		case ToastVariant.INFO:
-			iconClass = 'text-info'
-			icon = 'info-circle'
-			break
-		case ToastVariant.SUCCESS:
-			iconClass = 'text-success'
-			icon = 'check-circle'
-			break
-		case ToastVariant.WARNING:
-			iconClass = 'text-warning'
-			icon = 'warning-circle'
-			break
+	interface Props {
+		sleepInSeconds?: number
+		variant?: ToastVariant
+		id?: string
+		target: string
 	}
 
-	$: toastClass = `${toast} ${variant}`
-	$: toastId = `${id}-toast-${uid(10)}`
+	let {
+		sleepInSeconds = 3,
+		variant = $bindable(ToastVariant.ERROR),
+		id = 'toast',
+		target,
+	}: Props = $props()
+
+	let divClass = $derived(`${isShown ? 'block' : 'hidden'} toast toast-top
+        toast-center no-animation z-50 cursor-pointer`)
+
+	const toast = 'alert rounded-lg bg-white shadow border-2'
+	let iconClass = $state('')
+	let icon: UnplugIconName = $state()
+
+	run(() => {
+		switch (variant) {
+			case ToastVariant.ERROR:
+				iconClass = 'text-error'
+				icon = 'xmark-circle'
+				break
+			case ToastVariant.INFO:
+				iconClass = 'text-info'
+				icon = 'info-circle'
+				break
+			case ToastVariant.SUCCESS:
+				iconClass = 'text-success'
+				icon = 'check-circle'
+				break
+			case ToastVariant.WARNING:
+				iconClass = 'text-warning'
+				icon = 'warning-circle'
+				break
+		}
+	})
+
+	let toastClass = $derived(`${toast} ${variant}`)
+	let toastId = $derived(`${id}-toast-${uid(10)}`)
 
 	// onMount(() => console.log('JoyToast mounted', toastId))
 	// onDestroy(() => console.log('JoyToast destroyed', toastId))
@@ -98,15 +111,15 @@
 			role="alert"
 			class={toastClass}
 			use:clickMe
-			on:click-me={() => {
+			onclick-me={() => {
 				sleeping = false
 				hide()
 			}}
 		>
 			<JoyIcon {icon} class={iconClass} />
-			<!-- svelte-ignore a11y-no-static-element-interactions -->
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
-			<span on:click>{message}</span>
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<span onclick={bubble('click')}>{message}</span>
 		</div>
 	</div>
 {/key}

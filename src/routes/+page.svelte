@@ -19,10 +19,11 @@
 	import { superForm } from 'sveltekit-superforms'
 	import { zod } from 'sveltekit-superforms/adapters'
 
-	export let data
-	let toast: JoyToast
+	let { data } = $props()
 
-	let isAuthenticating = false
+	let toast = $state<ReturnType<typeof JoyToast>>()
+
+	let isAuthenticating = $state(false)
 
 	const { form, enhance, constraints } = superForm(data.form, {
 		SPA: true,
@@ -31,15 +32,14 @@
 		onUpdate({ form }) {
 			if (form.valid) {
 				isAuthenticating = true
-				signIn($form.username, $form.password)
+				signIn(form.data.username, form.data.password)
 					.then((response) => {
 						authResponse.set(response)
 						user.set(response.record)
 						goto(Finance.CASH_REQUESTS, { replaceState: true })
 					})
 					.catch(({ response }) => {
-						console.error({ response })
-						toast.fire({
+						toast?.fire({
 							message: String(response.message),
 							variant: ToastVariant.ERROR,
 						})
@@ -87,7 +87,9 @@
 						bordered
 						attributes={$constraints.username}
 					>
-						<JoyIcon icon="user-circle" slot="labeled-l" size={Size.LG} />
+						{#snippet labeledL()}
+							<JoyIcon icon="user-circle" size={Size.LG} />
+						{/snippet}
 					</JoyInput>
 				</div>
 
@@ -101,7 +103,9 @@
 						attributes={$constraints.password}
 						bordered
 					>
-						<JoyIcon icon="password-cursor" slot="labeled-l" size={Size.LG} />
+						{#snippet labeledL()}
+							<JoyIcon icon="password-cursor" size={Size.LG} />
+						{/snippet}
 					</JoyInput>
 				</div>
 			</JoyContainer>

@@ -10,17 +10,29 @@
 		type TextTagValues,
 	} from './types'
 
-	let clazz = ''
-	export { clazz as class }
-	export let tag: TextTagValues = TextTag.SPAN
-	export let color: TextColorValues = TextColor.INHERIT
-	export let weight: FontWeightValues = FontWeight.NORMAL
-	export let size: TextSizeValues = TextSize.BASE
-	export let italicize = false
+	interface Props {
+		class?: string
+		tag?: TextTagValues
+		color?: TextColorValues
+		weight?: FontWeightValues
+		size?: TextSizeValues
+		italicize?: boolean
+		children?: import('svelte').Snippet
+	}
 
-	$: textClass = `${color} ${weight} ${size} ${italicize && 'italic'} ${clazz}`
+	let {
+		class: clazz = '',
+		tag = TextTag.SPAN,
+		color = TextColor.INHERIT,
+		weight = FontWeight.NORMAL,
+		size = TextSize.BASE,
+		italicize = false,
+		children,
+	}: Props = $props()
+
+	let textClass = $derived(`${color} ${weight} ${size} ${italicize && 'italic'} ${clazz}`)
 </script>
 
 <svelte:element this={tag} class={textClass}>
-	<slot />
+	{@render children?.()}
 </svelte:element>

@@ -1,33 +1,48 @@
 <script lang="ts">
+	import { createBubbler } from 'svelte/legacy'
+
+	const bubble = createBubbler()
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 	import { Size } from '$lib/components/Base/Icon/types'
 
-	export let icon: UnplugIconName = 'crown-circle'
+	interface Props {
+		icon?: UnplugIconName
+		class?: string
+		href?: string
+		type?: 'a' | 'container' | 'button'
+		active?: boolean
+		label?: import('svelte').Snippet
+		children?: import('svelte').Snippet
+	}
 
-	let clazz = ''
-	export { clazz as class }
-	export let href: string = '#'
-	export let type: 'a' | 'container' | 'button' = 'a'
-	export let active = false
+	let {
+		icon = 'crown-circle',
+		class: clazz = '',
+		href = '#',
+		type = 'a',
+		active = false,
+		label,
+		children,
+	}: Props = $props()
 
-	$: itemClass = `w-full gap-4
-		transition-colors flex items-center ${!$$slots['label'] && 'justify-center'}
-		overflow-hidden group ${active && 'bg-accent/25 text-primary'} ${clazz}`
+	let itemClass = $derived(`w-full gap-4
+		transition-colors flex items-center ${!label && 'justify-center'}
+		overflow-hidden group ${active && 'bg-accent/25 text-primary'} ${clazz}`)
 </script>
 
 {#if type === 'a'}
-	<a {href} class={itemClass} on:click>
+	<a {href} class={itemClass} onclick={bubble('click')}>
 		<JoyIcon {icon} size={Size.LG} />
-		<slot name="label" />
+		{@render label?.()}
 	</a>
 {:else if type === 'container'}
-	<button class={itemClass} on:click>
-		<slot />
+	<button class={itemClass} onclick={bubble('click')}>
+		{@render children?.()}
 	</button>
 {:else}
-	<button class={itemClass} on:click>
+	<button class={itemClass} onclick={bubble('click')}>
 		<JoyIcon {icon} size={Size.LG} />
-		<slot name="label" />
+		{@render label?.()}
 	</button>
 {/if}

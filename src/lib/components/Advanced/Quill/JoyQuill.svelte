@@ -6,22 +6,32 @@
 	import 'quill/dist/quill.core.css'
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte'
 	import { QuillKeyboard, type QuillKeyboardEvents } from './types'
-	let container: HTMLElement, toolbar: HTMLElement
+	let container: HTMLElement = $state(),
+		toolbar: HTMLElement = $state()
 	let instance: Quill
-	export let value = ''
-	export let placeholder = 'Write Something'
-	export let quillClass = ''
-	let clazz = ''
-	export { clazz as class }
+	interface Props {
+		value?: string
+		placeholder?: string
+		quillClass?: string
+		class?: string
+	}
 
-	$: _quillClass = `overflow-auto w-full ${quillClass}`
-	$: _columnClass = `w-full ${clazz}`
+	let {
+		value = $bindable(''),
+		placeholder = 'Write Something',
+		quillClass = '',
+		class: clazz = '',
+	}: Props = $props()
+
+	let _quillClass = $derived(`overflow-auto w-full ${quillClass}`)
+	let _columnClass = $derived(`w-full ${clazz}`)
 
 	export const getInstance = (): Quill => instance
 
 	const dispatch = createEventDispatcher<QuillKeyboardEvents>()
 
-	export const setContent = (content: string) => instance.clipboard.dangerouslyPasteHTML(content)
+	export const setContent = (content: string) =>
+		instance.clipboard.dangerouslyPasteHTML(content)
 
 	onMount(() => {
 		instance = new Quill(container, {

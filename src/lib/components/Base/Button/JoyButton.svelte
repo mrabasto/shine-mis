@@ -1,31 +1,47 @@
 <script lang="ts">
 	import { ButtonSize, ButtonVariant } from './types'
-	export let label: string | undefined = undefined
-	export let size: ButtonSize = ButtonSize.SM
-	export let variant: ButtonVariant = ButtonVariant.NEUTRAL
-	export let plain: boolean = false
-	export let outline: boolean = false
-	export let type: 'submit' | 'reset' | 'button' = 'button'
-	export let disabled: boolean = false
-	export let noAnimation: boolean = true
-	let clazz = ''
-	export { clazz as class }
-	let btnClass = ''
-
-	$: if (!plain) {
-		btnClass = `btn outline-none ${outline && 'btn-outline'} ${variant} ${size} ${clazz}
-			${noAnimation && 'no-animation'}`
-	} else {
-		btnClass = clazz
+	interface Props {
+		label?: string | undefined
+		size?: ButtonSize
+		variant?: ButtonVariant
+		plain?: boolean
+		outline?: boolean
+		type?: 'submit' | 'reset' | 'button'
+		disabled?: boolean
+		noAnimation?: boolean
+		class?: string
+		children?: import('svelte').Snippet
+		onclick?: (event: MouseEvent) => void
 	}
+
+	let {
+		label = undefined,
+		size = ButtonSize.SM,
+		variant = ButtonVariant.NEUTRAL,
+		plain = false,
+		outline = false,
+		type = 'button',
+		disabled = $bindable(false),
+		noAnimation = true,
+		class: clazz = '',
+		children,
+		onclick,
+	}: Props = $props()
+
+	let btnClass = $derived(
+		!plain
+			? `btn outline-none ${outline && 'btn-outline'} ${variant} ${size} ${clazz}
+				${noAnimation && 'no-animation'}`
+			: clazz
+	)
 
 	function nodeType(node: HTMLButtonElement) {
 		node.type = type
 	}
 </script>
 
-<button class={btnClass} on:click use:nodeType {disabled}>
-	<slot />
+<button class={btnClass} {onclick} use:nodeType {disabled}>
+	{@render children?.()}
 	{#if label}
 		{label}
 	{/if}

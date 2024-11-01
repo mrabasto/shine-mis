@@ -7,33 +7,42 @@
 	import { BorderRounded } from '$lib/types/Round'
 	import { Shadow } from '$lib/types/Shadow'
 
-	let clazz: string = ''
-
-	export let padding: ContainerPadding = ContainerPadding.NONE
-	export let gap: ContainerGap = ContainerGap.XS
-	export let rounded: BorderRounded = BorderRounded.NONE
-	export let border: Border = Border.NONE
-	export let borderColor: BorderColor = BorderColor.BASE_300
-	export let shadow: Shadow = Shadow.NONE
-	export let justify: Justify = Justify.START
-	export let alignItems: AlignItems = AlignItems.START
-	export let col = false
-	// eslint-disable-next-line no-undef
-	export let tag: keyof HTMLElementTagNameMap = 'div'
-
-	export { clazz as class }
-
-	let divClass = 'flex '
-	$: {
-		if (col) {
-			divClass += 'flex-col'
-		}
-
-		divClass = `${divClass} ${justify} ${alignItems} ${padding} ${gap}
-			${border} ${borderColor} ${rounded} ${shadow} ${clazz}`
+	interface Props {
+		class?: string
+		padding?: ContainerPadding
+		gap?: ContainerGap
+		rounded?: BorderRounded
+		border?: Border
+		borderColor?: BorderColor
+		shadow?: Shadow
+		justify?: Justify
+		alignItems?: AlignItems
+		col?: boolean
+		// eslint-disable-next-line no-undef
+		tag?: keyof HTMLElementTagNameMap
+		children?: import('svelte').Snippet
 	}
+
+	let {
+		class: clazz = '',
+		padding = ContainerPadding.NONE,
+		gap = ContainerGap.XS,
+		rounded = BorderRounded.NONE,
+		border = Border.NONE,
+		borderColor = BorderColor.BASE_300,
+		shadow = Shadow.NONE,
+		justify = Justify.START,
+		alignItems = AlignItems.START,
+		col = false,
+		tag = 'div',
+		children,
+	}: Props = $props()
+
+	let divClass =
+		$derived(`flex ${col && 'flex-col'} ${justify} ${alignItems} ${padding} ${gap}
+			${border} ${borderColor} ${rounded} ${shadow} ${clazz}`)
 </script>
 
 <svelte:element this={tag} class={divClass}>
-	<slot />
+	{@render children?.()}
 </svelte:element>

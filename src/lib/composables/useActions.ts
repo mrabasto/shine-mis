@@ -1,23 +1,23 @@
 import type { Action } from 'svelte/action'
 
 type ClickMeAttributes = {
-	'on:click-me'?: (event: CustomEvent) => void
+	'onclick-me'?: (event: CustomEvent) => void
 }
 
 type ClickOutsideAttributes = {
-	'on:outside'?: (event: CustomEvent) => void
+	onoutside?: (event: CustomEvent) => void
 }
 
 type CtrlEnterAttributes = {
-	'on:ctrl-enter'?: (event: CustomEvent) => void
+	'onctrl-enter'?: (event: CustomEvent) => void
 }
 
 type CtrlShiftEnterAttributes = {
-	'on:ctrl-shift-enter'?: (event: CustomEvent) => void
+	'onctrl-shift-enter'?: (event: CustomEvent) => void
 }
 
 type EscapePressAttributes = {
-	'on:escape'?: (event: CustomEvent) => void
+	onescape?: (event: CustomEvent) => void
 }
 
 type EscapeEvents = 'keydown' | 'keypress' | 'keyup'

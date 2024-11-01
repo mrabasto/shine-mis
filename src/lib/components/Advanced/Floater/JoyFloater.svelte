@@ -3,21 +3,37 @@
 	import { clickOutside } from '$lib/composables/useActions'
 	import type { Placement } from '@floating-ui/dom'
 	import { uid } from 'radash'
-	import { onMount, tick } from 'svelte'
+	import { onMount, tick, type Snippet } from 'svelte'
 	import { fly } from 'svelte/transition'
 
-	let clazz = ''
-	export { clazz as class }
-	export let floaterClass = ''
-	export let placement: Placement = 'right'
-	export let fitSize = false
+	interface Props {
+		class?: string
+		floaterClass?: string
+		placement: Placement
+		fitSize: boolean
+		target?: HTMLDivElement
+		floater?: HTMLDivElement
+		floaterTarget?: Snippet<[() => Promise<void>]>
+		floaterContents?: Snippet<[() => Promise<void>]>
+		arrowElement?: HTMLDivElement
+	}
 
-	let target: HTMLDivElement, floater: HTMLDivElement, arrowElement: HTMLDivElement
+	let {
+		class: clazz = '',
+		floater,
+		floaterClass = '',
+		floaterTarget,
+		floaterContents,
+		fitSize,
+		arrowElement,
+		placement,
+		target,
+	}: Props = $props()
 
-	let floaterTargetId = 'floater-target-' + uid(10)
-	let floaterId = 'floater-' + uid(10)
+	let floaterTargetId = $derived('floater-target-' + uid(10))
+	let floaterId = $derived('floater-' + uid(10))
 
-	let transitionKey = false
+	let transitionKey = $state(false)
 
 	const show = async () => {
 		transitionKey = true
@@ -40,13 +56,11 @@
 			fitSize
 		)
 
-	onMount(async () => {
-		update()
-	})
+	onMount(update)
 </script>
 
 <div bind:this={target} class={clazz} id={floaterTargetId}>
-	<slot name="floater-target" {show} />
+	{@render floaterTarget(show)}
 </div>
 
 {#if transitionKey}
@@ -56,11 +70,15 @@
 		role="tooltip"
 		class={floaterClass}
 		use:clickOutside={[floaterTargetId]}
-		on:outside={hide}
+		onoutside={hide}
 		in:fly={{ duration: 100, opacity: 1, y: 10 }}
 		out:fly={{ duration: 100, opacity: 0, y: 10 }}
 	>
-		<slot name="floater-contents" {hide}><span>Contents go here</span></slot>
+		{#if floaterContents}
+			{@render floaterContents(hide)}
+		{:else}
+			<span>Contents go here</span>
+		{/if}
 		<div bind:this={arrowElement} id="arrow"></div>
 	</div>
 {/if}

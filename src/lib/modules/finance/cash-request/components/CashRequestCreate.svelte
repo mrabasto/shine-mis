@@ -16,11 +16,8 @@
 	import JoyInput from '$lib/components/Base/Input/JoyInput.svelte'
 	import { uid } from 'radash'
 	import { cashRequestService } from '$lib/modules/finance/cash-request/services'
-	import {
-		CashRequestEvent,
-		type CashRequestDispatch,
-	} from '$lib/modules/finance/cash-request/events'
-	import { createEventDispatcher, tick } from 'svelte'
+	import { type CashRequestDispatch } from '$lib/modules/finance/cash-request/events'
+	import { tick } from 'svelte'
 	import { scale, slide } from 'svelte/transition'
 	import JoyItemLoader from '$lib/components/Advanced/Loader/JoyItemLoader.svelte'
 	import { ctrlEnter, ctrlShiftEnter, escapePress } from '$lib/composables/useActions'
@@ -30,7 +27,7 @@
 	import JoyTooltip from '$lib/components/Advanced/Tooltip/JoyTooltip.svelte'
 	import { CashRequestDrawerMode } from './types'
 	import { writable } from 'svelte/store'
-	import { Size, type IconName } from '$lib/components/Base/Icon/types'
+	import { Size } from '$lib/components/Base/Icon/types'
 	import JoyContextMenu from '$lib/components/Advanced/ContextMenu/JoyContextMenu.svelte'
 	import JoyIconButton from '$lib/components/Advanced/Button/JoyIconButton.svelte'
 	import { user, type User } from '$lib/modules/authentication'
@@ -38,19 +35,27 @@
 	import JoyUserPicker from '$lib/components/Advanced/UserPicker/JoyUserPicker.svelte'
 	import { selectedCashRequest } from '$lib/modules/finance/cash-request/stores'
 
-	export let maxLimit = 10
+	interface Props extends CashRequestDispatch {
+		maxLimit?: number
+	}
 
-	let items: CashRequestItem[] = [],
-		isLoading = false,
-		toast: JoyToast,
+	let {
+		maxLimit = 10,
+		cashRequestCreate,
+		cashRequestEdit,
+		cashRequestError,
+	}: Props = $props()
+
+	let items: CashRequestItem[] = $state([]),
+		isLoading = $state(false),
+		toast = $state<ReturnType<typeof JoyToast>>(),
 		mode = writable(CashRequestDrawerMode.CREATE),
 		isShown = writable(false),
 		cashRequest = writable<CashRequest>(),
-		requestModeLabel: string,
-		submitItemsLabel: string,
-		isUserPickerShown = false
+		requestModeLabel = $state(),
+		submitItemsLabel = $state(''),
+		isUserPickerShown = $state(false)
 
-	const dispatch = createEventDispatcher<CashRequestDispatch>()
 	const { createCashRequest, updateCashRequest } = cashRequestService()
 
 	const newItem = () => ({
@@ -75,7 +80,7 @@
 
 	const submit = () => {
 		if (notValid) {
-			return toast.fire({
+			return toast?.fire({
 				message: 'Invalid items',
 				variant: ToastVariant.ERROR,
 			})
@@ -92,29 +97,29 @@
 
 			return updateCashRequest($cashRequest?.id, dto)
 				.then((response) => {
-					dispatch(CashRequestEvent.EDIT, response)
+					cashRequestEdit?.(response)
 
 					tick().then(() => {
 						hide()
 					})
 				})
-				.catch((response) => dispatch(CashRequestEvent.ERROR, response.message))
+				.catch((response) => cashRequestError?.(response.message))
 				.finally(() => (isLoading = false))
 		}
 
 		createCashRequest(items)
 			.then((response) => {
-				dispatch(CashRequestEvent.CREATE, response)
+				cashRequestCreate?.(response)
 
 				tick().then(() => {
 					hide()
 				})
 			})
-			.catch((response) => dispatch(CashRequestEvent.ERROR, response.message))
+			.catch((response) => cashRequestError?.(response.message))
 			.finally(() => (isLoading = false))
 	}
 
-	const approvalIcon = (approvalStatus: ApprovalStatus): IconName | UnplugIconName => {
+	const approvalIcon = (approvalStatus: ApprovalStatus): UnplugIconName => {
 		switch (approvalStatus) {
 			case ApprovalStatus.PENDING:
 				return 'warning-circle-solid'
@@ -164,12 +169,16 @@
 		history.back()
 	}
 
-	$: notValid =
+	let notValid = $derived(
 		items.length === 0 ||
-		items.some((i) => i.label.length === 0 || !i.price || i.price === 0)
+			items.some((i) => i.label.length === 0 || !i.price || i.price === 0)
+	)
 
-	$: isInLimit = items.length === maxLimit
-	$: $isShown = Boolean($page.state.cashRequestDrawer?.isOpen)
+	let isInLimit = $derived(items.length === maxLimit)
+
+	page.subscribe((value) => {
+		$isShown = Boolean(value.state.cashRequestDrawer?.isOpen)
+	})
 
 	isShown.subscribe(async (value) => {
 		if (!value) return
@@ -200,12 +209,12 @@
 	<section
 		use:ctrlEnter
 		use:escapePress
-		on:escape={hide}
-		on:ctrl-enter={addItem}
+		onescape={hide}
+		onctrl-enter={addItem}
 		use:ctrlShiftEnter
-		on:ctrl-shift-enter={submit}
+		onctrl-shift-enter={submit}
 		data-blocked={!$isShown}
-	/>
+	></section>
 
 	<JoyItemLoader {isLoading} />
 
@@ -232,16 +241,13 @@
 		<JoyTooltip class="ml-auto" placement="left">
 			<JoyIcon icon="question-mark-circle" />
 
-			<JoyContainer
-				slot="tooltip-content"
-				class="w-full"
-				padding={ContainerPadding.XS}
-				col
-			>
-				<span>(Esc) Close</span>
-				<span>(Ctrl+Enter) Add item</span>
-				<span>(Ctrl+Shift+Enter) Submit items</span>
-			</JoyContainer>
+			{#snippet tooltipContent()}
+				<JoyContainer class="w-full" padding={ContainerPadding.XS} col>
+					<span>(Esc) Close</span>
+					<span>(Ctrl+Enter) Add item</span>
+					<span>(Ctrl+Shift+Enter) Submit items</span>
+				</JoyContainer>
+			{/snippet}
 		</JoyTooltip>
 	</JoyContainer>
 
@@ -293,17 +299,17 @@
 			</JoyText>
 
 			<JoyContextMenu class="grow" placement="bottom-end" fitSize>
-				<JoyButton
-					slot="context-target"
-					let:showContextMenu
-					label={$cashRequest.approval_status}
-					plain
-					class={approvalButtonClass($cashRequest.approval_status)}
-					size={ButtonSize.LG}
-					on:click={showContextMenu}
-				/>
+				{#snippet contextTarget(showContextMenu)}
+					<JoyButton
+						label={$cashRequest.approval_status}
+						plain
+						class={approvalButtonClass($cashRequest.approval_status)}
+						size={ButtonSize.LG}
+						on:click={showContextMenu}
+					/>
+				{/snippet}
 
-				<svelte:fragment slot="context-contents" let:hideContextMenu>
+				{#snippet contextContents(hideContextMenu)}
 					<JoyIconButton
 						size={ButtonSize.MD}
 						class="w-full justify-start flex items-center gap-2 px-4 py-2 hover:bg-success/10 rounded-lg"
@@ -345,7 +351,7 @@
 					>
 						Pending
 					</JoyIconButton>
-				</svelte:fragment>
+				{/snippet}
 			</JoyContextMenu>
 		</JoyContainer>
 
@@ -365,7 +371,7 @@
 		<JoyButton
 			label={submitItemsLabel}
 			variant={ButtonVariant.ACCENT}
-			bind:disabled={notValid}
+			disabled={notValid}
 			on:click={submit}
 		/>
 	</JoyContainer>

@@ -4,22 +4,33 @@
 	import { teleport } from '$lib/components/Advanced/Toast/actions'
 	import { clickMe } from '$lib/composables/useActions'
 
-	export let isShown = false
-
-	export let target = 'shell'
-	export let blocked = false
-
-	export let hide: () => void = () => {
-		isShown = false
+	interface Props {
+		isShown?: boolean
+		target?: string
+		blocked?: boolean
+		hide?: () => void
+		class?: string
+		children?: import('svelte').Snippet
 	}
 
-	let clazz = ''
-	export { clazz as class }
+	let {
+		isShown = $bindable(false),
+		target = 'shell',
+		blocked = false,
+		hide = () => {
+			isShown = false
+		},
+		class: clazz = '',
+		children,
+	}: Props = $props()
 
-	$: divClass = `${isShown ? 'flex justify-end' : 'hidden'} ${blocked && 'cursor-progress'} 
-		overflow-hidden absolute inset-0 bg-base-300/50 z-50`
+	let divClass =
+		$derived(`${isShown ? 'flex justify-end' : 'hidden'} ${blocked && 'cursor-progress'} 
+		overflow-hidden absolute inset-0 bg-base-300/50 z-50`)
 
-	$: slotContainerClass = `min-h-full w-full bg-base-100 shadow relative ${clazz}`
+	let slotContainerClass = $derived(
+		`min-h-full w-full bg-base-100 shadow relative ${clazz}`
+	)
 </script>
 
 {#key isShown}
@@ -28,7 +39,7 @@
 		class={divClass}
 		use:teleport={target}
 		use:clickMe
-		on:click-me={hide}
+		onclick-me={hide}
 		in:fade={{ duration: 100 }}
 		out:fade={{ duration: 100, delay: 100 }}
 		data-blocked={blocked}
@@ -39,7 +50,7 @@
 		>
 			<div class="h-full" transition:fade={{ duration: 200 }}>
 				<JoyContainer class={slotContainerClass} col>
-					<slot />
+					{@render children?.()}
 				</JoyContainer>
 			</div>
 		</div>

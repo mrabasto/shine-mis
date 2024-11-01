@@ -16,13 +16,21 @@
 	import { createEventDispatcher } from 'svelte'
 	import { JoyUserPickerEvent, type UserPickerDispatch } from './types'
 
-	export let isShown = false
-	export let selectedUser: User | undefined
 	const dispatch = createEventDispatcher<UserPickerDispatch>()
 
-	export let hide: () => void = () => {
-		isShown = false
+	interface Props {
+		isShown?: boolean
+		selectedUser: User | undefined
+		hide?: () => void
 	}
+
+	let {
+		isShown = $bindable(false),
+		selectedUser,
+		hide = () => {
+			isShown = false
+		},
+	}: Props = $props()
 
 	const generateAvatar = (name: string) =>
 		createAvatar(thumbs, {

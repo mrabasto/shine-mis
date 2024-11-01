@@ -1,20 +1,33 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy'
+
 	import { BorderRounded } from '$lib/types/Round'
 	import { TextAreaSize, TextAreaVariant } from './types'
 
-	export let placeholder: string = 'Type here'
-	export let size: TextAreaSize = TextAreaSize.MD
-	export let variant: TextAreaVariant = TextAreaVariant.NEUTRAL
-	export let bordered = false
-	export let value: string | number | undefined = undefined
-	export let name: string | undefined = undefined
-	export let rounded: BorderRounded = BorderRounded.MD
+	interface Props {
+		placeholder?: string
+		size?: TextAreaSize
+		variant?: TextAreaVariant
+		bordered?: boolean
+		value?: string | number | undefined
+		name?: string | undefined
+		rounded?: BorderRounded
+		class?: string
+	}
 
-	let clazz = ''
-	let textareaClass = ''
-	export { clazz as class }
+	let {
+		placeholder = 'Type here',
+		size = TextAreaSize.MD,
+		variant = TextAreaVariant.NEUTRAL,
+		bordered = false,
+		value = $bindable(undefined),
+		name = undefined,
+		rounded = BorderRounded.MD,
+		class: clazz = '',
+	}: Props = $props()
+	let textareaClass = $state('')
 
-	$: {
+	run(() => {
 		let buildClass = ''
 
 		if (bordered) {
@@ -22,7 +35,7 @@
 		}
 
 		textareaClass = `textarea ${variant} ${size} ${rounded} ${buildClass} ${clazz}`
-	}
+	})
 </script>
 
-<textarea {name} {placeholder} class={textareaClass} bind:value />
+<textarea {name} {placeholder} class={textareaClass} bind:value></textarea>

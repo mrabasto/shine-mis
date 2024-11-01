@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy'
+
 	import { afterNavigate, goto } from '$app/navigation'
 	import { page } from '$app/stores'
 	import JoySidebar from '$lib/components/Advanced/Sidebar/JoySidebar.svelte'
@@ -15,6 +17,11 @@
 	import { tick } from 'svelte'
 	import { cubicOut } from 'svelte/easing'
 	import { tweened } from 'svelte/motion'
+	interface Props {
+		children?: import('svelte').Snippet
+	}
+
+	let { children }: Props = $props()
 
 	afterNavigate(() => {
 		const [route] = $attendanceRoutes.filter((r) => r.path === $page.route.id)
@@ -52,19 +59,22 @@
 		easing: cubicOut,
 	})
 
-	let isOpen = true
+	let isOpen = $state(true)
 
 	const toggleSidebar = () => {
 		isOpen ? sidebarWidth.set(0) : sidebarWidth.set(300)
 		return (isOpen = !isOpen)
 	}
 
-	$: sidebar = `width: ${$sidebarWidth}px`
-	$: spinAnimation = {
+	let sidebar = $derived(`width: ${$sidebarWidth}px`)
+	let spinAnimation = $derived({
 		duration: animationDuration,
 		direction: 'right',
-	} as SpinAnimationOptions
-	$: handlerIcon = 'nav-arrow-left' as IconName | UnplugIconName
+	} as SpinAnimationOptions)
+	let handlerIcon
+	run(() => {
+		handlerIcon = 'nav-arrow-left' as IconName | UnplugIconName
+	})
 </script>
 
 <JoyContainer gap={ContainerGap.NONE} class="w-full h-full">
@@ -81,7 +91,7 @@
 					<div
 						class="inset-0 grid place-items-center"
 						in:spin={spinAnimation}
-						on:introend={() =>
+						onintroend={() =>
 							(handlerIcon = isOpen ? 'nav-arrow-left' : 'nav-arrow-right')}
 					>
 						<JoyIcon icon={handlerIcon} />
@@ -89,19 +99,21 @@
 				{/key}
 			</JoyButton>
 
-			<JoySidebar let:SidebarItem class="w-[300px]">
-				{#each $attendanceRoutes as route (route.path)}
-					<SidebarItem
-						icon={route.icon}
-						class={activeClass(route).sidebarItemClass}
-						on:click={() => setActive(route)}
-						href={route.path}
-					>
-						<JoyText slot="label" class={activeClass(route).itemLabelClass}
-							>{route.label}
-						</JoyText>
-					</SidebarItem>
-				{/each}
+			<JoySidebar class="w-[300px]">
+				{#snippet children({ SidebarItem })}
+					{#each $attendanceRoutes as route (route.path)}
+						<SidebarItem
+							icon={route.icon}
+							class={activeClass(route).sidebarItemClass}
+							on:click={() => setActive(route)}
+							href={route.path}
+						>
+							{#snippet label()}
+								<JoyText class={activeClass(route).itemLabelClass}>{route.label}</JoyText>
+							{/snippet}
+						</SidebarItem>
+					{/each}
+				{/snippet}
 			</JoySidebar>
 		</div>
 	</div>
@@ -112,7 +124,7 @@
 			class="overflow-y-auto w-full h-full relative flex-none"
 			padding={ContainerPadding.MD}
 		>
-			<slot />
+			{@render children?.()}
 		</JoyContainer>
 	</JoyContainer>
 </JoyContainer>

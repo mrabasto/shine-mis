@@ -1,30 +1,49 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy'
+
 	import { ButtonSize, ButtonVariant } from '$lib/components/Base/Button/types'
 	import type { HTMLAnchorAttributes } from 'svelte/elements'
-	export let attributes: HTMLAnchorAttributes | undefined = undefined
 
-	export let label: string | undefined = undefined
-	export let size: ButtonSize | undefined = undefined
-	export let variant: ButtonVariant | undefined = undefined
-	export let plain: boolean = false
-	export let outline: boolean = false
-	let clazz = ''
-	export let href = '#'
-	export { clazz as class }
+	interface Props {
+		attributes?: HTMLAnchorAttributes | undefined
+		label?: string | undefined
+		size?: ButtonSize | undefined
+		variant?: ButtonVariant | undefined
+		plain?: boolean
+		outline?: boolean
+		class?: string
+		href?: string
+		children?: import('svelte').Snippet
+	}
 
-	$: btnClass = `${!plain && 'btn'} ${outline && 'btn-outline'} ${size} ${variant} ${clazz}`
+	let {
+		attributes = undefined,
+		label = undefined,
+		size = undefined,
+		variant = undefined,
+		plain = false,
+		outline = false,
+		class: clazz = '',
+		href = '#',
+		children,
+	}: Props = $props()
 
-	$: {
+	let btnClass
+	run(() => {
+		btnClass = `${!plain && 'btn'} ${outline && 'btn-outline'} ${size} ${variant} ${clazz}`
+	})
+
+	run(() => {
 		switch (variant) {
 			case ButtonVariant.GHOST:
 				btnClass = `${btnClass} hover:bg-blue-50`
 				break
 		}
-	}
+	})
 </script>
 
 <a class={btnClass} {href} {...attributes}>
-	<slot />
+	{@render children?.()}
 	{#if label}
 		{label}
 	{/if}

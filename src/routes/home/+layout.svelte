@@ -20,9 +20,9 @@
 	import { userService } from '$lib/modules/users'
 	const { loadUsers } = userService()
 
-	export let data
-	let toast: JoyToast
-	let avatar: string
+	let { data, children } = $props()
+	let toast = $state<ReturnType<typeof JoyToast>>()
+	let avatar = $state<string>('')
 
 	onMount(async () => {
 		$authStore = data.auth
@@ -40,7 +40,7 @@
 		App.isLoading.set(false)
 
 		if (err) {
-			return toast.fire({
+			return toast?.fire({
 				message: 'Failed to retrieve user roles',
 				variant: ToastVariant.ERROR,
 			})
@@ -53,7 +53,7 @@
 		const loadUserError = await loadUsers()
 
 		if (loadUserError) {
-			toast.fire({
+			toast?.fire({
 				message: 'Failed to retrieve users',
 				variant: ToastVariant.ERROR,
 			})
@@ -63,58 +63,64 @@
 
 <JoyContainer class="w-full h-full overflow-hidden" gap={ContainerGap.NONE}>
 	<JoyToast bind:this={toast} target="shell" />
-	<JoySidebar let:SidebarItem class="border-r">
-		{#each $routes as route (route.path)}
-			{#if route.isShown}
+	<JoySidebar class="border-r">
+		{#snippet children({ SidebarItem })}
+			{#each $routes as route (route.path)}
+				{#if route.isShown}
+					<JoyTooltip
+						label={route.label}
+						class="hover:bg-secondary/25 hover:text-primary w-full"
+					>
+						<SidebarItem icon={route.icon} href={route.path} class="p-4" />
+					</JoyTooltip>
+				{/if}
+			{/each}
+
+			<JoyContainer
+				gap={ContainerGap.NONE}
+				padding={ContainerPadding.NONE}
+				col
+				class="mt-auto w-full"
+			>
 				<JoyTooltip
-					label={route.label}
+					label="Profile"
 					class="hover:bg-secondary/25 hover:text-primary w-full"
 				>
-					<SidebarItem icon={route.icon} href={route.path} class="p-4" />
+					<SidebarItem type="container" class="max-w-[5rem] max-h-[4rem] p-4">
+						<img class="rounded-full w-full h-full" src={avatar} alt="user-avatar" />
+					</SidebarItem>
 				</JoyTooltip>
-			{/if}
-		{/each}
 
-		<JoyContainer
-			gap={ContainerGap.NONE}
-			padding={ContainerPadding.NONE}
-			col
-			class="mt-auto w-full"
-		>
-			<JoyTooltip label="Profile" class="hover:bg-secondary/25 hover:text-primary w-full">
-				<SidebarItem type="container" class="max-w-[5rem] max-h-[4rem] p-4">
-					<img class="rounded-full w-full h-full" src={avatar} alt="user-avatar" />
-				</SidebarItem>
-			</JoyTooltip>
+				<JoyContextMenu
+					class="hover:bg-secondary/25 hover:text-primary w-full"
+					contentsClass="bg-white"
+				>
+					{#snippet contextTarget(showContextMenu)}
+						<SidebarItem
+							type="button"
+							icon="hambuger-menu-line-duotone"
+							onclick={showContextMenu}
+							class="p-4"
+						/>
+					{/snippet}
 
-			<JoyContextMenu
-				class="hover:bg-secondary/25 hover:text-primary w-full"
-				contentsClass="bg-white"
-			>
-				<SidebarItem
-					type="button"
-					icon="hambuger-menu-line-duotone"
-					let:showContextMenu
-					on:click={showContextMenu}
-					slot="context-target"
-					class="p-4"
-				/>
-				<svelte:fragment slot="context-contents">
-					<JoyIconButton
-						variant={ButtonVariant.GHOST}
-						size={ButtonSize.MD}
-						class="w-full justify-start"
-						on:click={signOut}
-						icon="exit-outline"
-					>
-						Sign out
-					</JoyIconButton>
-				</svelte:fragment>
-			</JoyContextMenu>
-		</JoyContainer>
+					{#snippet contextContents()}
+						<JoyIconButton
+							variant={ButtonVariant.GHOST}
+							size={ButtonSize.MD}
+							class="w-full justify-start"
+							on:click={signOut}
+							icon="exit-outline"
+						>
+							Sign out
+						</JoyIconButton>
+					{/snippet}
+				</JoyContextMenu>
+			</JoyContainer>
+		{/snippet}
 	</JoySidebar>
 
 	<JoyContainer class="w-full h-full overflow-y-auto" padding={ContainerPadding.NONE}>
-		<slot />
+		{@render children?.()}
 	</JoyContainer>
 </JoyContainer>

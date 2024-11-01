@@ -3,17 +3,19 @@
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import { fly } from 'svelte/transition'
 
-	let isShown = true
+	let isShown = $state(true)
 
 	let duration = 200,
 		delay = 200
 
-	$: display = isShown ? 'absolute flex' : 'hidden'
-	$: showDisplay = !isShown ? 'absolute flex' : 'hidden'
-	$: trackerClass = `-translate-x-1/2 start-1/2 end-1/2 bottom-1 bg-white/25 
-		rounded-lg z-[9999] gap-2 items-center backdrop-blur-sm overflow-hidden`
-	$: displayClass = `${display} ${trackerClass} w-[500px] p-4`
-	$: showDisplayClass = `${showDisplay} ${trackerClass} w-[100px] justify-center`
+	let display = $derived(isShown ? 'absolute flex' : 'hidden')
+	let showDisplay = $derived(!isShown ? 'absolute flex' : 'hidden')
+	let trackerClass = $derived(`-translate-x-1/2 start-1/2 end-1/2 bottom-1 bg-white/25 
+		rounded-lg z-[9999] gap-2 items-center backdrop-blur-sm overflow-hidden`)
+	let displayClass = $derived(`${display} ${trackerClass} w-[500px] p-4`)
+	let showDisplayClass = $derived(
+		`${showDisplay} ${trackerClass} w-[100px] justify-center`
+	)
 </script>
 
 {#key isShown}

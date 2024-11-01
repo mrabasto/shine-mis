@@ -7,13 +7,22 @@
 	import { AlignItems } from '$lib/types/AlignItems'
 	import { ContainerGap } from '$lib/types/Gap'
 	import { fade } from 'svelte/transition'
-	let clazz = ''
-	export { clazz as class }
-	export let label = 'Please wait'
-	$: loaderClass = `absolute inset-0 bg-white/25 backdrop-blur-sm 
-		grid place-items-center z-10 ${clazz}`
 
-	export let isLoading = false
+	interface Props {
+		class?: string
+		label?: string
+		isLoading?: boolean
+		children?: import('svelte').Snippet
+	}
+
+	let {
+		class: clazz = '',
+		label = 'Please wait',
+		isLoading = $bindable(false),
+		children,
+	}: Props = $props()
+	let loaderClass = $derived(`absolute inset-0 bg-white/25 backdrop-blur-sm 
+		grid place-items-center z-10 ${clazz}`)
 </script>
 
 {#if isLoading}
@@ -29,5 +38,5 @@
 		</JoyContainer>
 	</div>
 {:else}
-	<slot />
+	{@render children?.()}
 {/if}
