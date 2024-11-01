@@ -13,5 +13,5 @@ export interface CashRequestDispatch extends LoadingDispatch {
 }
 
 export interface LoadingDispatch {
-	toggleLoading: () => boolean
+	toggleLoading?: () => boolean
 }

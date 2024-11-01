@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { createBubbler } from 'svelte/legacy'
-
-	const bubble = createBubbler()
 	import JoyIcon from '$lib/components/Base/Icon/JoyIcon.svelte'
 	import type { UnplugIconName } from '$lib/components/Base/Icon/Unplug'
 	import { Size } from '$lib/components/Base/Icon/types'
+	import type { Snippet } from 'svelte'
 
 	interface Props {
 		icon?: UnplugIconName
@@ -12,8 +10,9 @@
 		href?: string
 		type?: 'a' | 'container' | 'button'
 		active?: boolean
-		label?: import('svelte').Snippet
-		children?: import('svelte').Snippet
+		label?: Snippet
+		children?: Snippet
+		onclick: (event: MouseEvent) => void
 	}
 
 	let {
@@ -24,6 +23,7 @@
 		active = false,
 		label,
 		children,
+		onclick,
 	}: Props = $props()
 
 	let itemClass = $derived(`w-full gap-4
@@ -32,16 +32,16 @@
 </script>
 
 {#if type === 'a'}
-	<a {href} class={itemClass} onclick={bubble('click')}>
+	<a {href} class={itemClass} {onclick}>
 		<JoyIcon {icon} size={Size.LG} />
 		{@render label?.()}
 	</a>
 {:else if type === 'container'}
-	<button class={itemClass} onclick={bubble('click')}>
+	<button class={itemClass} {onclick}>
 		{@render children?.()}
 	</button>
 {:else}
-	<button class={itemClass} onclick={bubble('click')}>
+	<button class={itemClass} {onclick}>
 		<JoyIcon {icon} size={Size.LG} />
 		{@render label?.()}
 	</button>

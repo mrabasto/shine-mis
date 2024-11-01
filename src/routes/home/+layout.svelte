@@ -109,7 +109,7 @@
 							variant={ButtonVariant.GHOST}
 							size={ButtonSize.MD}
 							class="w-full justify-start"
-							on:click={signOut}
+							onclick={signOut}
 							icon="exit-outline"
 						>
 							Sign out
